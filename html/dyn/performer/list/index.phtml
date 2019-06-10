@@ -9,7 +9,7 @@
   {
     $_REQUEST["names"] = json_decode ($_REQUEST["names"], true);
 
-    $where = 'where name in ("'. str_replace ("|", '","', mysqli_real_escape_string ($mysql, implode ('|', $_REQUEST["names"]))). '")';
+    $where = 'where name in ("'. str_replace ("|", '","', mysqli_real_escape_string ($mysql, preg_replace ('/\|((sir|lord|dame) )/i', '|', implode ('|', $_REQUEST["names"])))). '")';
     
     $apireturn["request"]["type"] = "names";
     $apireturn["request"]["item"] = $_REQUEST["names"];
