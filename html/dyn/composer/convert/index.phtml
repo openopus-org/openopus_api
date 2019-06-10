@@ -1,0 +1,26 @@
+<?
+  include_once ("../../../../lib/inc.php");
+  include_once (BASEDIR. "/lib/google.php");
+
+  define (DIR, "/var/www/concertmaster_player/html/player/img/portraits/");
+  $files = scandir (DIR);
+
+  $composers = mysqlfetch ($mysql, "select id, name from composer where portrait is null order by name asc");
+
+  foreach ($composers as $composer)
+  {
+    $file = $files [array_search (slug ($composer["name"]). ".jpg", $files, TRUE)];
+    
+    if (file_exists (DIR. $file) && $file != ".")
+    { 
+      $image = cloudupload (DIR. $file, rand (11111111, 99999999), "portraits");
+      mysqlupdate ($mysql, "composer", ["portrait" => $image], ["id" => $composer["id"]]);
+      $apireturn["composers"][] = ["id" => $composer["id"], "name" => $composer["name"], "file" => $file, "portrait" => $image];
+    }
+  }
+
+  $apireturn["status"]["success"] = "true";
+  $apireturn["status"]["no_portraits"] = sizeof ($composers);
+  $apireturn["status"]["updated_rows"] = sizeof ($apireturn["composers"]);
+
+  echo apireturn ($apireturn);

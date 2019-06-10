@@ -1,0 +1,89 @@
+<?
+  include_once ("../../../../lib/inc.php");
+
+  // filtering
+
+  $from = ["work", "composer"];
+  $where[] = "composer.id=work.composer_id";
+  $apireturn["criteria"] = [];
+
+  if ($_REQUEST["genre"])
+  {
+    if ($_REQUEST["genre"] != "All")
+    {
+      $where[] = "genre = '{$_REQUEST["genre"]}'";
+      $apireturn["criteria"][] = ["genre"=>$_REQUEST["genre"]];
+    }
+  }
+
+  if ($_REQUEST["epoch"])
+  {
+    if ($_REQUEST["epoch"] != "All")
+    {
+      $where[] = "epoch = '{$_REQUEST["epoch"]}'";
+      $apireturn["criteria"][] = ["epoch"=>$_REQUEST["epoch"]];
+    }
+  }
+
+  if ($_REQUEST["composer"])
+  {
+    if (strpos ($_REQUEST["composer"], ",") !== false)
+    {
+      $where[] = "composer_id in ({$_REQUEST["composer"]})";
+    }
+    else if ($_REQUEST["composer"] != "All")
+    {
+      $where[] = "composer_id = '{$_REQUEST["composer"]}'";
+    }
+
+    $apireturn["criteria"][] = ["composer"=>$_REQUEST["composer"]];
+  }
+
+  if ($_REQUEST["composer_not"] && (!$_REQUEST["composer"] || $_REQUEST["composer"] == "All"))
+  {
+    $where[] = "composer_id not in ({$_REQUEST["composer_not"]})";
+  }
+
+  if ($_REQUEST["work"])
+  {
+    if (strpos ($_REQUEST["work"], ",") !== false)
+    {
+      $where[] = "work.id in ({$_REQUEST["work"]})";
+    }
+    else if ($_REQUEST["work"] != "All")
+    {
+      $where[] = "work.id = '{$_REQUEST["work"]}'";
+    }
+
+    $apireturn["criteria"][] = ["work"=>$_REQUEST["work"]];
+  }
+
+  // try to find suitable works in the database
+
+  $query = "select work.id, genre, title, composer.id as composer, name, complete_name, epoch from ". implode (",", $from). " where ". implode (" and ", $where). " order by rand() limit 40";
+  $work = mysqlfetch ($mysql, $query);
+  
+  if (!$work)
+  {
+    // if no work exists, return an error
+
+    $apireturn["status"] = Array ("success"=>"false", "error"=>"No works found");
+  }
+  else
+  {
+    // there are works, try to find recordings in the database
+
+    $apireturn["status"] = Array ("success"=>"true");
+
+    foreach ($work as $wk)
+    {
+      $apireturn["works"][] = Array (
+        "id" => $wk["id"],
+        "title" => $wk["title"],
+        "genre" => $wk["genre"],
+        "composer" => ["id"=>$wk["composer"], "name"=>$wk["name"], "complete_name"=>$wk["complete_name"], "epoch"=>$wk["epoch"]]
+      );
+    }
+  }
+
+  echo apireturn ($apireturn);

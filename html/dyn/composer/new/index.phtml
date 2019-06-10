@@ -1,0 +1,42 @@
+<?
+  include_once ("../../../../lib/inc.php");
+
+  // identity check
+
+  if (!simpleauth ($mysql, $_REQUEST["id"], $_REQUEST["auth"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Authentication failed";
+  }
+  else if (!postcheck ($_REQUEST, ["name", "complete_name", "birth", "death", "epoch", "country", "uni_id"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Missing fields";
+  }
+  else
+  {
+      // everything ok
+
+      $insert = Array 
+      (
+        "name" => $_REQUEST["name"], 
+        "complete_name" => $_REQUEST["complete_name"],
+        "birth" => $_REQUEST["birth"],
+        "death" => $_REQUEST["death"],
+        "epoch" => $_REQUEST["epoch"],
+        "country" => $_REQUEST["country"],
+        "uni_id" => $_REQUEST["uni_id"],
+        "recommended" => $_REQUEST["recommended"]
+      );
+
+      $cid = mysqlinsert ($mysql, "composer", $insert);
+
+      $apireturn["status"]["success"] = "true";
+      $apireturn["user"]["id"] = $_REQUEST["id"];
+      $apireturn["composer"] = $insert;
+      $apireturn["composer"]["id"] = $cid;
+
+      shell_exec ("rm ". WEBDIR. "/composer/list/ -rf");
+  }
+
+  echo apireturn ($apireturn);

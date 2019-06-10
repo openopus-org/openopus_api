@@ -1,0 +1,41 @@
+<?
+  include_once ("../../../../lib/inc.php");
+
+  // identity check
+
+  if (!simpleauth ($mysql, $_REQUEST["id"], $_REQUEST["auth"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Authentication failed";
+  }
+  else if (!postcheck ($_REQUEST, ["wid", "composer_id"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Missing fields";
+  }
+  else
+  {
+      // everything ok
+
+      mysqli_query ($mysql, "delete from work where id={$_REQUEST["wid"]} and composer_id={$_REQUEST["composer_id"]}");
+      $op = mysqli_affected_rows ($mysql);
+
+      if ($op >= 1)
+      {
+        $apireturn["status"]["success"] = "true";
+
+        shell_exec ("rm ". WEBDIR. "/genre/list/composer/{$_REQUEST["composer_id"]}.json");
+        shell_exec ("rm ". WEBDIR. "/work/list/composer/{$_REQUEST["composer_id"]}/ -rf");
+        shell_exec ("rm ". WEBDIR. "/recording/list/work/{$_REQUEST["wid"]}.json");
+      }
+      else
+      {
+        $apireturn["status"]["success"] = "false";
+      }
+
+      $apireturn["status"]["deleted_rows"] = $op;
+      $apireturn["user"]["id"] = $_REQUEST["id"];
+      $apireturn["work"]["id"] = $_REQUEST["wid"];
+  }
+
+  echo apireturn ($apireturn);

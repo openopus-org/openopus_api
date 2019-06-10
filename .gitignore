@@ -1,0 +1,8 @@
+*DS_Store*
+html/work/*
+html/composer/*
+log/*
+lib/inc.php
+composer.lock
+vendor/*
+keys/*

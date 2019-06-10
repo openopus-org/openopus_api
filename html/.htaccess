@@ -1,0 +1,44 @@
+Header set Access-Control-Allow-Origin "*"
+AddType 'application/json' .json
+FileETag None
+Header unset ETag
+Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+Header set Pragma "no-cache"
+Header set Expires "Wed, 11 Jan 1984 05:00:00 GMT"  
+
+<IfModule mod_rewrite.c>
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule composer/list/name/(.*).json dyn/composer/list.phtml?name=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule composer/list/id/(.*).json dyn/composer/list.phtml?id=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule composer/list/search/(.*).json dyn/composer/list.phtml?search=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule composer/list/epoch/(.*).json dyn/composer/list.phtml?epoch=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule composer/list/ids/(.*).json dyn/composer/list.phtml?ids=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule work/list/composer/(.*)/ids/(.*)/search/(.*).json dyn/work/list.phtml?composer=$1&ids=$2&search=$3 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule work/list/composer/(.*)/genre/(.*)/search/(.*).json dyn/work/list.phtml?composer=$1&genre=$2&search=$3 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule work/list/composer/(.*)/(.*).json dyn/work/list.phtml?composer=$1&genre=$2 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule work/detail/(.*).json dyn/work/detail.phtml?id=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule work/list/ids/(.*).json dyn/work/list.phtml?ids=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule genre/list/composer/(.*).json dyn/genre/list.phtml?composer=$1 [L]
+</IfModule>

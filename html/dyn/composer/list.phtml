@@ -1,0 +1,87 @@
+<?
+  include_once ("../../../lib/inc.php");
+
+  $goquery = true;
+
+  // treating where clauses: name, search, epoch
+
+  if ($_REQUEST["name"])
+  {
+    $apireturn["request"]["type"] = "name";
+    $apireturn["request"]["item"] = $_REQUEST["name"];
+
+    if (strlen ($_REQUEST["name"]) == 1)
+    {
+      $where = "where SUBSTRING(name, 1, 1) = '{$_REQUEST["name"]}'";
+    }
+    else if ($_REQUEST["name"] != "all")
+    {
+      $goquery = false;
+      $apireturn["status"] = Array ("success"=>"false", "error"=>"Too long initial letter");
+    }
+  }
+  else if ($_REQUEST["search"])
+  {
+    $apireturn["request"]["type"] = "search";
+    $apireturn["request"]["item"] = $_REQUEST["search"];
+
+    if (strlen ($_REQUEST["search"]) > 3)
+    {
+      $where = "where match (name, complete_name) against ('{$_REQUEST["search"]}*' IN BOOLEAN MODE)";
+    }
+    else
+    {
+      $goquery = false;
+      $apireturn["status"] = Array ("success"=>"false", "error"=>"Too short search term");
+    }
+  }
+  else if ($_REQUEST["epoch"])
+  {
+    if ($_REQUEST["epoch"] != "all")
+    {
+      $where = "where epoch = '{$_REQUEST["epoch"]}'";
+    }
+    
+    $apireturn["request"]["type"] = "epoch";
+    $apireturn["request"]["item"] = $_REQUEST["epoch"];
+  }
+  else if ($_REQUEST["id"])
+  {
+    $where = "where id = '{$_REQUEST["id"]}'";
+    
+    $apireturn["request"]["type"] = "id";
+    $apireturn["request"]["item"] = $_REQUEST["id"];
+  }
+  else if ($_REQUEST["ids"])
+  {
+    $where = "where id in (". mysqli_real_escape_string ($mysql, $_REQUEST["ids"]). ")";
+    
+    $apireturn["request"]["type"] = "ids";
+    $apireturn["request"]["item"] = $_REQUEST["ids"];
+  }
+
+  // listing composers
+
+  if ($goquery)
+  {
+    $composers = mysqlfetch ($mysql, "select id, name, complete_name, birth, death, epoch, portrait from composer $where order by name asc");
+
+    if (!$composers)
+    {
+      // if no composers exist, return an error
+
+      $apireturn["status"] = Array ("success"=>"false", "error"=>"No composers found");
+    }
+    else
+    {
+      // there are composers, go list'em
+
+      $apireturn["status"]["success"] = "true";
+      $apireturn["status"]["source"] = "db";
+      $apireturn["composers"] = $composers;
+      $apireturn["status"]["rows"] = sizeof ($apireturn["composers"]);
+    }
+  }
+
+  echo savecache ("/composer/list/{$apireturn["request"]["type"]}/{$apireturn["request"]["item"]}.json", apireturn ($apireturn));
+

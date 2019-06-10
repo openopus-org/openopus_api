@@ -1,0 +1,41 @@
+<?
+  include_once ("../../../../lib/inc.php");
+
+  // identity check
+
+  if (!simpleauth ($mysql, $_REQUEST["id"], $_REQUEST["auth"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Authentication failed";
+  }
+  else if (!postcheck ($_REQUEST, ["composer_id", "title", "genre", "uni_id"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Missing fields";
+  }
+  else
+  {
+      // everything ok
+
+      $insert = Array 
+      (
+        "composer_id" => $_REQUEST["composer_id"], 
+        "title" => $_REQUEST["title"],
+        "genre" => $_REQUEST["genre"],
+        "year" => $_REQUEST["year"],
+        "recommended" => $_REQUEST["recommended"],
+        "uni_id" => $_REQUEST["uni_id"]
+      );
+
+      $wid = mysqlinsert ($mysql, "work", $insert);
+
+      $apireturn["status"]["success"] = "true";
+      $apireturn["user"]["id"] = $_REQUEST["id"];
+      $apireturn["work"] = $insert;
+      $apireturn["work"]["id"] = $wid;
+
+      shell_exec ("rm ". WEBDIR. "/genre/list/composer/{$_REQUEST["composer_id"]}.json");
+      shell_exec ("rm ". WEBDIR. "/work/list/composer/{$_REQUEST["composer_id"]}/ -rf");
+  }
+
+  echo apireturn ($apireturn);

@@ -1,0 +1,63 @@
+<?
+  include_once ("../../../lib/inc.php");
+
+  // listing works
+
+  $sql = "select fullname, namesearch, epoch, genre, composer_id as composer, composer.name, composer.complete_name, title, ifnull(subtitle,'') subtitle, ifnull (lower(searchtitle),lower(title)) searchtitle, lower(alternatetitles) alternatetitles, work.id from work, composer where work.id = {$_REQUEST["id"]} and composer.id=work.composer_id";
+  $works = mysqlfetch ($mysql, $sql);
+
+  if (!$works)
+  {
+    // if no works exist, return an error
+
+    $apireturn["status"] = Array ("success"=>"false", "error"=>"Work not found");
+  }
+  else
+  {
+    // there is a work, go display it
+
+    if ($works[0]["searchtitle"] == strtolower ($works[0]["title"]))
+    {
+      $works[0]["searchtitle"] = worksimplifier ($works[0]["title"]);
+    }
+
+    $apireturn["status"] = Array ("success"=>"true", "source"=>"db");
+    $apireturn["composer"] = Array
+      (
+        "id"=>$works[0]["composer"],
+        "name"=>$works[0]["name"],
+        "complete_name"=>$works[0]["complete_name"],
+        "epoch"=>$works[0]["epoch"]
+      );
+    $apireturn["work"] = arraydelete ($works, ["composer", "name", "complete_name", "epoch"])[0];
+
+    // look for similarly titled works from the same composer
+
+    $query = "select id, title, ifnull (lower(searchtitle),lower(title)) searchtitle from work where composer_id={$works[0]["composer"]} order by id desc";
+    $worksdb = mysqlfetch ($mysql, $query);
+
+    $isim = 1;
+
+    foreach ($worksdb as $wk)
+    {
+      if (strtolower ($wk["searchtitle"]) == strtolower ($wk["title"]))
+      {
+        $wk["searchtitle"] = worksimplifier ($wk["title"]);
+      }
+
+      similar_text ($works[0]["searchtitle"], $wk["searchtitle"], $similarity);
+
+      if ($similarity > MIN_SIMILAR && $wk["id"] != $_REQUEST["id"])
+      {
+        ++$isim;
+        $wkdb[round ($similarity). str_pad($isim, 10, "0")] = array_merge ($wk, Array ("similarity" => round ($similarity)));
+      }
+    }
+
+    krsort ($wkdb, SORT_NUMERIC);
+
+    $apireturn["similarlytitled"] = array_values ($wkdb);
+  }
+  
+  echo savecache ("/work/detail/{$_REQUEST["id"]}.json", apireturn ($apireturn));
+  

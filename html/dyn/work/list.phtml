@@ -1,0 +1,97 @@
+<?
+  include_once ("../../../lib/inc.php");
+
+  $apireturn["request"]["type"] = "genre";
+  $apireturn["request"]["item"] = $_REQUEST["genre"];
+
+  // treating where clauses: ids, genre and search
+
+  if ($_REQUEST["genre"])
+  {
+    if ($_REQUEST["genre"] != "all")
+    {
+      $where = "and genre = '{$_REQUEST["genre"]}'";
+    }
+  }
+
+  if ($_REQUEST["search"])
+  {
+    if (strlen ($_REQUEST["search"]) > 3)
+    {
+      $where .= "and match (title, subtitle) against ('{$_REQUEST["search"]}*' IN BOOLEAN MODE)";
+    }
+    else
+    {
+      $goquery = false;
+      $apireturn["status"] = Array ("success"=>"false", "error"=>"Too short search term");
+    }
+  }
+
+  if ($_REQUEST["ids"])
+  {
+    $apireturn["request"]["type"] = "ids";
+    $apireturn["request"]["item"] = $_REQUEST["ids"];
+
+    $where .= "and work.id in (". mysqli_real_escape_string ($mysql, $_REQUEST["ids"]). ")";
+  }
+
+  if ($_REQUEST["composer"])
+  {
+    $where .= "and composer.id = '{$_REQUEST["composer"]}'";
+  }
+
+  // listing works
+
+  $sql = "select title, ifnull(subtitle,'') subtitle, work.id as id, genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name from composer, work where work.composer_id = composer.id $where order by composer.name asc, title asc";
+  $works = mysqlfetch ($mysql, $sql);
+
+  if (!$works)
+  {
+    // if no composers exist, return an error
+
+    $apireturn["status"] = Array ("success"=>"false", "error"=>"No works found");
+  }
+  else
+  {
+    // there are composers, go list'em
+
+    $apireturn["status"] = Array ("success"=>"true", "source"=>"db");
+
+    if ($_REQUEST["composer"])
+    {
+      $apireturn["composer"] = Array
+        (
+          "id"=>$works[0]["composer"],
+          "name"=>$works[0]["name"],
+          "epoch"=>$works[0]["epoch"]
+        );
+
+      $apireturn["works"] = arraydelete ($works, ["composer", "name", "complete_name", "epoch"]);
+    }
+
+    if (!$_REQUEST["composer"])
+    {
+      foreach ($works as $work)
+      {
+        $apireturn["works"]["w:". $work["id"]] = Array (
+          "composer" => ["id" => $work["composer"], "name" => $work["name"], "complete_name" => $work["complete_name"], "epoch" => $work["epoch"]],
+          "id" => $work["id"],
+          "title" => $work["title"],
+          "subtitle" => $work["subtitle"],
+          "genre" => $work["genre"]
+        );
+      }
+    }
+
+    $apireturn["status"]["rows"] = sizeof ($apireturn["works"]);
+  }
+
+  if ($_REQUEST["search"])
+  {
+    echo savecache ("/work/list/composer/{$_REQUEST["composer"]}/genre/{$_REQUEST["genre"]}/search/{$_REQUEST["search"]}.json", apireturn ($apireturn));
+  }
+  else
+  {
+    echo savecache ("/work/list/composer/{$_REQUEST["composer"]}/{$_REQUEST["genre"]}.json", apireturn ($apireturn));
+  }
+  

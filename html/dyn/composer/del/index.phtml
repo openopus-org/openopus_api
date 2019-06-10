@@ -1,0 +1,41 @@
+<?
+  include_once ("../../../../lib/inc.php");
+
+  // identity check
+
+  if (!simpleauth ($mysql, $_REQUEST["id"], $_REQUEST["auth"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Authentication failed";
+  }
+  else if (!postcheck ($_REQUEST, ["cid"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Missing fields";
+  }
+  else
+  {
+      // everything ok
+
+      mysqli_query ($mysql, "delete from composer where id={$_REQUEST["cid"]}");
+      $op = mysqli_affected_rows ($mysql);
+
+      if ($op >= 1)
+      {
+        $apireturn["status"]["success"] = "true";
+
+        shell_exec ("rm ". WEBDIR. "/composer/list/ -rf");
+        shell_exec ("rm ". WEBDIR. "/genre/list/composer/{$_REQUEST["cid"]}.json");
+        shell_exec ("rm ". WEBDIR. "/work/list/composer/{$_REQUEST["cid"]}/ -rf");
+      }
+      else
+      {
+        $apireturn["status"]["success"] = "false";
+      }
+
+      $apireturn["status"]["deleted_rows"] = $op;
+      $apireturn["user"]["id"] = $_REQUEST["id"];
+      $apireturn["composer"]["id"] = $_REQUEST["cid"];
+  }
+
+  echo apireturn ($apireturn);

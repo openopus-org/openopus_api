@@ -1,0 +1,66 @@
+<?
+  include_once ("../../../../lib/inc.php");
+  include_once (BASEDIR. "/lib/google.php");
+
+  // identity check
+
+  if (!postcheck ($_REQUEST, ["cid", "name", "complete_name", "birth", "epoch", "country"]))
+  {
+    $apireturn["status"]["success"] = "false";
+    $apireturn["status"]["error"] = "Missing fields";
+  }
+  else
+  {
+      // everything ok
+
+      $update = Array 
+      (
+        "name" => $_REQUEST["name"], 
+        "complete_name" => $_REQUEST["complete_name"],
+        "birth" => $_REQUEST["birth"],
+        "death" => $_REQUEST["death"],
+        "epoch" => $_REQUEST["epoch"],
+        "country" => $_REQUEST["country"],
+        "recommended" => $_REQUEST["recommended"],
+        "popular" => $_REQUEST["popular"]
+      );
+
+      $time = time ();
+
+      if ($_FILES["image"]["name"])
+      {
+        foreach ($_FILES as $file)
+        {
+          $apireturn["upload"][] = $file["name"];
+          $_REQUEST["image"] = cloudupload ($file["tmp_name"], rand (11111111, 99999999), "portraits", $file["name"]);
+        }
+
+        $update["portrait"] = $_REQUEST["image"];
+      }
+
+      $where = Array 
+      (
+        "id" => $_REQUEST["cid"]
+      );
+
+      $op = mysqlupdate ($mysql, "composer", $update, $where);
+
+      if ($op >= 1)
+      {
+        $apireturn["status"]["success"] = "true";
+
+        shell_exec ("rm ". WEBDIR. "/composer/list/ -rf");
+        shell_exec ("rm ". WEBDIR. "/work/list/composer/{$_REQUEST["cid"]}/ -rf");
+        shell_exec ("rm ". WEBDIR. "/genre/list/composer/{$_REQUEST["cid"]}.json");
+      }
+      else
+      {
+        $apireturn["status"]["success"] = "false";
+      }
+
+      $apireturn["status"]["updated_rows"] = $op;
+      $apireturn["composer"] = $update;
+      $apireturn["composer"]["id"] = $_REQUEST["cid"];
+  }
+
+  echo apireturn ($apireturn);

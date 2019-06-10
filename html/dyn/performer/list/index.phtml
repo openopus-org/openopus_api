@@ -1,0 +1,42 @@
+<?
+  include_once ("../../../../lib/inc.php");
+
+  $goquery = true;
+
+  // treating name list
+
+  if ($_REQUEST["names"])
+  {
+    $_REQUEST["names"] = json_decode ($_REQUEST["names"], true);
+
+    $where = 'where name in ("'. str_replace ("|", '","', mysqli_real_escape_string ($mysql, implode ('|', $_REQUEST["names"]))). '")';
+    
+    $apireturn["request"]["type"] = "names";
+    $apireturn["request"]["item"] = $_REQUEST["names"];
+  }
+  else
+  {
+    $apireturn["status"] = Array ("success"=>"false", "error"=>"Bad request");
+    $goquery = false;
+  }
+
+  // listing performers
+
+  if ($goquery)
+  {
+    $performers = mysqlfetch ($mysql, "select name, role from performer $where order by name asc");
+    $rldb = arrayobjtoassoc ($performers, ["name", "role"]);
+    
+    foreach ($_REQUEST["names"] as $pf)
+    {
+      $pfs[] = ["name"=>$pf, "role"=>guessrole ($pf, $rldb)];
+    }
+
+    $apireturn["status"]["success"] = "true";
+    $apireturn["status"]["source"] = "db";
+    $apireturn["performers"] = ["readable"=>$pfs, "digest"=>arrayobjtoassoc($pfs, ["name", "role"])];
+    $apireturn["status"]["rows"] = sizeof ($apireturn["performers"]);
+  }
+
+  echo apireturn ($apireturn);
+

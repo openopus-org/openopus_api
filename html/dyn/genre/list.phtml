@@ -1,0 +1,31 @@
+<?
+  include_once ("../../../lib/inc.php");
+
+  // listing genres
+
+  $sql = "select genre, composer.epoch, composer.id as composer, composer.name from composer, work where work.composer_id = composer.id and composer.id = '{$_REQUEST["composer"]}' group by genre order by genre asc";
+  $genres = mysqlfetch ($mysql, $sql);
+
+  if (!$genres)
+  {
+    // if no genres exist, return an error
+
+    $apireturn["status"] = Array ("success"=>"false", "error"=>"No genres found");
+  }
+  else
+  {
+    // there are genres, go list'em
+
+    $apireturn["status"] = Array ("success"=>"true", "source"=>"db");
+    $apireturn["composer"] = Array
+      (
+        "id"=>$genres[0]["composer"],
+        "name"=>$genres[0]["name"],
+        "epoch"=>$genres[0]["epoch"]
+      );
+    $apireturn["genres"] = arraykeepvalues ($genres, ["genre"]);
+    $apireturn["status"]["rows"] = sizeof ($apireturn["genres"]);
+  }
+
+  echo savecache ("/genre/list/composer/{$_REQUEST["composer"]}.json", apireturn ($apireturn));
+
