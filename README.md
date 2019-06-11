@@ -31,7 +31,7 @@ cp inc-example.php inc.php
 vim inc.php
 ```
 
-5. This API uses Google Cloud to store image files. Create a 'keys' directory in /var/www/openopus_api/ and put your Google Cloud key.json in it
+5. This API uses Google Cloud to store image files. Create a 'keys' directory in /var/www/openopus_api/ and put your Google Cloud keyfile.json in it
 6. Set the environment variables for root:
 
 ```bash
