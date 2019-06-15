@@ -3,7 +3,7 @@
 
   // identity check
 
-  if (!postcheck ($_REQUEST, ["cid", "multiedit"]))
+  if (!postcheck ($_REQUEST, ["cid", "multiedit", "genre"]))
   {
     $apireturn["status"]["success"] = "false";
     $apireturn["status"]["error"] = "Missing fields";
@@ -26,6 +26,10 @@
           if ($matches[4][0] == "--")
           {
             mysqli_query ($mysql, "delete from work where id = '{$matches[3][0]}'");
+          }
+          elseif ($matches[3][0] == "0" && ($_REQUEST["genre"] != "Recommended" && $_REQUEST["genre"] != "Popular" && $_REQUEST["genre"] != "all"))
+          {
+            mysqli_query ($mysql, "insert into work (title, subtitle, genre, composer_id, recommended, popular) values ('". mysqli_real_escape_string ($mysql, $matches[4][0]). "', '". mysqli_real_escape_string ($mysql, $matches[5][0]). "', '". $_REQUEST["genre"]. "', '". $_REQUEST["cid"]. "', ". ($matches[1][0] == "*" ? 1 : 0). ", ". ($matches[2][0] == "+" ? 1 : 0). ")");
           }
           else
           {
