@@ -16,7 +16,7 @@
   define ("SOFTWAREVERSION", "1.19");
   define ("USERAGENT", SOFTWARENAME. "/" . SOFTWAREVERSION. " ( ". SOFTWAREMAIL. " )");
   define ("API_RETURN", "json");
-  define ("MIN_SIMILAR", 40);
+  define ("MIN_SIMILAR", 20);
   define ("PORTRAIT_W", 200);
 
   // performer roles keywords
