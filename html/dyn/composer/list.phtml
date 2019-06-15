@@ -59,6 +59,20 @@
     $apireturn["request"]["type"] = "ids";
     $apireturn["request"]["item"] = $_REQUEST["ids"];
   }
+  else if ($_REQUEST["pop"])
+  {
+    $where = "where popular = '1'";
+    
+    $apireturn["request"]["type"] = "pop";
+    $apireturn["request"]["item"] = $_REQUEST["pop"];
+  }
+  else if ($_REQUEST["rec"])
+  {
+    $where = "where recommended = '1'";
+    
+    $apireturn["request"]["type"] = "rec";
+    $apireturn["request"]["item"] = $_REQUEST["rec"];
+  }
 
   // listing composers
 

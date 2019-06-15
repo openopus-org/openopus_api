@@ -13,8 +13,8 @@
     $apireturn["status"] = Array ("success"=>"false", "error"=>"No genres found");
   }
   else
-  {
-    // there are genres, go list'em
+  { 
+    // listing genres
 
     $apireturn["status"] = Array ("success"=>"true", "source"=>"db");
     $apireturn["composer"] = Array
@@ -24,6 +24,19 @@
         "epoch"=>$genres[0]["epoch"]
       );
     $apireturn["genres"] = arraykeepvalues ($genres, ["genre"]);
+
+    // are there popular or recommended works?
+
+    $sql = "select count(id) qtd, popular, recommended from work where composer_id = '{$_REQUEST["composer"]}' and (popular='1' or recommended='1') group by popular, recommended";
+    $pops = mysqlfetch ($mysql, $sql);
+
+    foreach ($pops as $pop)
+    {
+      if ($pop["recommended"]) array_unshift ($apireturn["genres"], "Recommended");
+      if ($pop["popular"]) array_unshift ($apireturn["genres"], "Popular");
+    }
+
+    $apireturn["genres"] = array_values (array_unique ($apireturn["genres"]));
     $apireturn["status"]["rows"] = sizeof ($apireturn["genres"]);
   }
 

@@ -7,6 +7,30 @@
   $where[] = "composer.id=work.composer_id";
   $apireturn["criteria"] = [];
 
+  if ($_REQUEST["popularwork"]) 
+  {
+    $where[] = "work.popular = '1'";
+    $apireturn["criteria"][] = ["popularwork"=>1];
+  }
+
+  if ($_REQUEST["recommendedwork"]) 
+  {
+    $where[] = "work.recommended = '1'";
+    $apireturn["criteria"][] = ["recommendedwork"=>1];
+  }
+
+  if ($_REQUEST["popularcomposer"]) 
+  {
+    $where[] = "composer.popular = '1'";
+    $apireturn["criteria"][] = ["popularcomposer"=>1];
+  }
+
+  if ($_REQUEST["recommendedcomposer"]) 
+  {
+    $where[] = "composer.recommended = '1'";
+    $apireturn["criteria"][] = ["recommendedcomposer"=>1];
+  }
+
   if ($_REQUEST["genre"])
   {
     if ($_REQUEST["genre"] != "All")

@@ -22,6 +22,12 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule composer/list/epoch/(.*).json dyn/composer/list.phtml?epoch=$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule composer/list/pop.json dyn/composer/list.phtml?pop=1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule composer/list/rec.json dyn/composer/list.phtml?rec=1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule composer/list/ids/(.*).json dyn/composer/list.phtml?ids=$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -29,6 +35,9 @@ RewriteRule work/list/composer/(.*)/ids/(.*)/search/(.*).json dyn/work/list.phtm
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule work/list/composer/(.*)/genre/(.*)/search/(.*).json dyn/work/list.phtml?composer=$1&genre=$2&search=$3 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule work/multiview/composer/(.*)/(.*).json dyn/work/list.phtml?composer=$1&genre=$2&multiview=1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule work/list/composer/(.*)/(.*).json dyn/work/list.phtml?composer=$1&genre=$2 [L]

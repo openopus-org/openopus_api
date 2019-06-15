@@ -8,7 +8,17 @@
 
   if ($_REQUEST["genre"])
   {
-    if ($_REQUEST["genre"] != "all")
+    if ($_REQUEST["genre"] == "Popular")
+    {
+      $where = "and work.popular = '1'";
+      $order = "genre asc, ";
+    }
+    elseif ($_REQUEST["genre"] == "Recommended")
+    {
+      $where = "and work.recommended = '1'";
+      $order = "genre asc, ";
+    }
+    elseif ($_REQUEST["genre"] != "all")
     {
       $where = "and genre = '{$_REQUEST["genre"]}'";
     }
@@ -33,6 +43,11 @@
     $apireturn["request"]["item"] = $_REQUEST["ids"];
 
     $where .= "and work.id in (". mysqli_real_escape_string ($mysql, $_REQUEST["ids"]). ")";
+    $order = "genre asc, ";
+  }
+  elseif ($_REQUEST["genre"] != "Popular" && $_REQUEST["genre"] != "Recommended")
+  {
+    $order = "recommended desc, ";
   }
 
   if ($_REQUEST["composer"])
@@ -40,9 +55,14 @@
     $where .= "and composer.id = '{$_REQUEST["composer"]}'";
   }
 
+  if ($_REQUEST["multiview"])
+  {
+    $order = "";
+  }
+
   // listing works
 
-  $sql = "select title, ifnull(subtitle,'') subtitle, work.id as id, genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name from composer, work where work.composer_id = composer.id $where order by composer.name asc, title asc";
+  $sql = "select title, ifnull(subtitle,'') subtitle, work.popular popular, work.recommended recommended, work.id as id, genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name from composer, work where work.composer_id = composer.id $where order by composer.name asc, $order title asc";
   $works = mysqlfetch ($mysql, $sql);
 
   if (!$works)
@@ -81,6 +101,16 @@
           "genre" => $work["genre"]
         );
       }
+    }
+
+    if ($_REQUEST["multiview"])
+    {
+      foreach ($works as $wk)
+      {
+        $wkarr[] = ($wk["recommended"] ? "*" : ""). ($wk["popular"] ? "+" : ""). "{$wk["id"]}>>{$wk["title"]}<<{$wk["subtitle"]}";
+      }
+
+      $apireturn["works"] = implode ("\n", $wkarr);
     }
 
     $apireturn["status"]["rows"] = sizeof ($apireturn["works"]);
