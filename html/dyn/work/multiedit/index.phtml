@@ -23,7 +23,15 @@
           preg_match_all ('/^(\*)?(\+)?([0-9]*)>>(.*)<<(.*)/i', $m, $matches);
           $apireturn["works"][] = ["id" => $matches[3][0], "title" => $matches[4][0], "subtitle" => $matches[5][0], "recommended" => ($matches[1][0] == "*" ? 1 : 0), "popular" => ($matches[2][0] == "+" ? 1 : 0)];
           
-          mysqli_query ($mysql, "update work set title='". mysqli_real_escape_string ($mysql, $matches[4][0]). "', subtitle='". mysqli_real_escape_string ($mysql, $matches[5][0]). "', recommended=". ($matches[1][0] == "*" ? 1 : 0). ", popular=". ($matches[2][0] == "+" ? 1 : 0). " where id = '{$matches[3][0]}'");
+
+          if ($matches[4][0])
+          {
+            mysqli_query ($mysql, "update work set title='". mysqli_real_escape_string ($mysql, $matches[4][0]). "', subtitle='". mysqli_real_escape_string ($mysql, $matches[5][0]). "', recommended=". ($matches[1][0] == "*" ? 1 : 0). ", popular=". ($matches[2][0] == "+" ? 1 : 0). " where id = '{$matches[3][0]}'");
+          }
+          else
+          {
+            mysqli_query ($mysql, "delete work where id = '{$matches[3][0]}'");
+          }
         }
 
         mysqli_commit ($mysql);
