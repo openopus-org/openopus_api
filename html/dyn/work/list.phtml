@@ -120,6 +120,10 @@
   {
     echo savecache ("/work/list/composer/{$_REQUEST["composer"]}/genre/{$_REQUEST["genre"]}/search/{$_REQUEST["search"]}.json", apireturn ($apireturn));
   }
+  else if ($_REQUEST["multiview"])
+  {
+    echo savecache ("/work/multiview/composer/{$_REQUEST["composer"]}/{$_REQUEST["genre"]}.json", apireturn ($apireturn));
+  }
   else
   {
     echo savecache ("/work/list/composer/{$_REQUEST["composer"]}/{$_REQUEST["genre"]}.json", apireturn ($apireturn));
