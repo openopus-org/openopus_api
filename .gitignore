@@ -6,3 +6,4 @@ lib/inc.php
 composer.lock
 vendor/*
 keys/*
+composer.phar
