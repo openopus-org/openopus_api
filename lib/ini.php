@@ -22,7 +22,7 @@
   // performer roles keywords
 
   $orchestra_kw = ['orchestra', 'symphony', 'philharmonic', 'philharmoniker', 'philharmonie', 'symphoniker', 'orchester', 'academy', 'orchestre', 'orchestra', 'orquesta', 'orquestra', 'orkester', 'orkest', 'philharmonia', 'academie', 'academia', 'accademia', 'akademie', 'society', 'societe', 'societa', 'sinfonietta', 'camerata', 'sinfonia', 'staatskapelle', 'strings', 'collegium', 'consortium'];
-  $ensemble_kw = ['ensemble', 'quartet', 'quintet', 'trio', 'duo', 'players', 'solisti', 'chamber'];
+  $ensemble_kw = ['ensemble', 'quartet', 'quintet', 'trio', 'duo', 'players', 'solisti', 'chamber', 'octet', 'nonet', 'decet', 'oktett'];
   $choir_kw = ['choir', 'chorus', 'choral', 'cantorum', 'coro', 'singers', 'kammerchor', 'voices', 'kantorei', 'rundfunkchor', 'singakademie', 'vocale', 'knabenchor', 'singverein', 'sangerknaben', 'scholars'];
   
   // helper libraries
