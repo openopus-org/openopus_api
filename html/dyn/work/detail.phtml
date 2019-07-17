@@ -33,10 +33,31 @@
 
     // look for similarly titled works from the same composer
 
-    $query = "select id, title, ifnull (lower(searchtitle),lower(title)) searchtitle from work where composer_id={$works[0]["composer"]} order by id desc";
+    $query = "select id, title, ifnull (lower(searchtitle),lower(title)) searchtitle, alternatetitles from work where composer_id={$works[0]["composer"]} order by id desc";
     $worksdb = mysqlfetch ($mysql, $query);
 
     $isim = 1;
+
+    foreach ($worksdb as $wk)
+    {
+      if ($wk["alternatetitles"])
+      {
+        $altwks = explode (",", $wk["alternatetitles"]);
+
+        foreach ($altwks as $altwk)
+        {
+          $worksdb[] = Array
+            (
+              "id" => $wk["id"],
+              "title" => $wk["title"],
+              "searchtitle" => $altwk,
+              "alternatetitles" => $wk["alternatetitles"]
+            );
+        }
+      }
+    }
+
+    $worksdb = arraydelete ($worksdb, ["alternatetitles"]);
 
     foreach ($worksdb as $wk)
     {
