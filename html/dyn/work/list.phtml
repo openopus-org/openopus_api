@@ -62,7 +62,7 @@
 
   // listing works
 
-  $sql = "select title, alternatetitles, ifnull(subtitle,'') subtitle, work.popular popular, work.recommended recommended, work.id as id, genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name from composer, work where work.composer_id = composer.id $where order by composer.name asc, $order title asc";
+  $sql = "select title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, work.id as id, genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name from composer, work where work.composer_id = composer.id $where order by composer.name asc, $order title asc";
   $works = mysqlfetch ($mysql, $sql);
 
   if (!$works)
@@ -107,7 +107,7 @@
     {
       foreach ($works as $wk)
       {
-        $wkarr[] = ($wk["recommended"] ? "*" : ""). ($wk["popular"] ? "+" : ""). "{$wk["id"]}>>{$wk["title"]}". ($wk["alternatetitles"] ? " [{$wk["alternatetitles"]}]" : ""). "<<{$wk["subtitle"]}";
+        $wkarr[] = ($wk["recommended"] ? "*" : ""). ($wk["popular"] ? "+" : ""). "{$wk["id"]}>>{$wk["title"]}". ($wk["searchterms"] ? " [{$wk["searchterms"]}]" : ""). "<<{$wk["subtitle"]}";
       }
 
       $apireturn["works"] = implode ("\n", $wkarr);

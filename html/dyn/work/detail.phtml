@@ -3,7 +3,7 @@
 
   // listing works
 
-  $sql = "select fullname, namesearch, epoch, genre, composer_id as composer, composer.name, composer.complete_name, title, ifnull(subtitle,'') subtitle, ifnull (lower(searchtitle),lower(title)) searchtitle, lower(alternatetitles) alternatetitles, work.id from work, composer where work.id = {$_REQUEST["id"]} and composer.id=work.composer_id";
+  $sql = "select epoch, genre, composer_id as composer, composer.name, composer.complete_name, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.id from work, composer where work.id = {$_REQUEST["id"]} and composer.id=work.composer_id";
   $works = mysqlfetch ($mysql, $sql);
 
   if (!$works)
@@ -16,9 +16,42 @@
   {
     // there is a work, go display it
 
-    if ($works[0]["searchtitle"] == strtolower ($works[0]["title"]))
+    if ($works[0]["searchterms"])
     {
-      $works[0]["searchtitle"] = worksimplifier ($works[0]["title"]);
+      $works[0]["searchterms"] = array_map ("trim", explode (",", $works[0]["searchterms"]));
+      $works[0]["searchmode"] = "title";
+    }
+    else
+    {
+      preg_match_all (CATALOGUE_REGEX, $works[0]["title"], $matches);
+
+      if (sizeof ($matches[0]))
+      {
+        $works[0]["searchmode"] = "catalogue";
+        $works[0]["catalogue"] = trim(end($matches[2]));
+        $works[0]["catalogue_number"] = trim(end($matches[8]));
+
+        $search = end($matches[2]). " ". end($matches[8]);
+
+        if (strtolower (end($matches[2])) == "op" || strtolower (end($matches[2])) == "opus")
+        {
+          preg_match_all ('/(no\.)( )*([0-9])+/i', $works[0]["title"], $opmatches);
+          
+          if (sizeof ($opmatches[0]))
+          {
+            $search .= " ". end ($opmatches[0]);
+            $works[0]["additional_number"] = trim(end($opmatches[3]));
+          }
+        }
+
+        $works[0]["searchterms"] = [$search];
+      }
+      else
+      { 
+        $works[0]["searchmode"] = "title";
+        $works[0]["searchterms"] = [worksimplifier ($works[0]["title"])];
+        $number = false;
+      }
     }
 
     $apireturn["status"] = Array ("success"=>"true", "source"=>"db");
@@ -31,53 +64,55 @@
       );
     $apireturn["work"] = arraydelete ($works, ["composer", "name", "complete_name", "epoch"])[0];
 
-    // look for similarly titled works from the same composer
+    // in title mode, look for similarly titled works from the same composer
 
-    $query = "select id, title, ifnull (lower(searchtitle),lower(title)) searchtitle, alternatetitles from work where composer_id={$works[0]["composer"]} order by id desc";
-    $worksdb = mysqlfetch ($mysql, $query);
-
-    $isim = 1;
-
-    foreach ($worksdb as $wk)
+    if ($works[0]["searchmode"] == "title")
     {
-      if ($wk["alternatetitles"])
-      {
-        $altwks = explode (",", $wk["alternatetitles"]);
 
-        foreach ($altwks as $altwk)
+      $query = "select id, title, ifnull(searchterms,'') searchterms from work where composer_id={$works[0]["composer"]} order by id desc";
+      $worksdb = mysqlfetch ($mysql, $query);
+
+      $isim = 1;
+
+      foreach ($worksdb as $wk)
+      {
+        if ($wk["searchterms"])
         {
-          $worksdb[] = Array
-            (
-              "id" => $wk["id"],
-              "title" => $wk["title"],
-              "searchtitle" => $altwk,
-              "alternatetitles" => $wk["alternatetitles"]
-            );
+          $altwks = explode (",", $wk["searchterms"]);
+
+          foreach ($altwks as $altwk)
+          {
+            $worksdb[] = Array
+              (
+                "id" => $wk["id"],
+                "title" => $wk["title"],
+                "searchterm" => $altwk
+              );
+          }
         }
       }
-    }
 
-    $worksdb = arraydelete ($worksdb, ["alternatetitles"]);
-
-    foreach ($worksdb as $wk)
-    {
-      if (strtolower ($wk["searchtitle"]) == strtolower ($wk["title"]))
+      foreach ($worksdb as $wk)
       {
-        $wk["searchtitle"] = worksimplifier ($wk["title"]);
+        if (!$wk["searchterms"])
+        {
+          if (!$wk["searchterm"]) $wk["searchterm"] = worksimplifier ($wk["title"]);
+        
+          foreach ($works[0]["searchterms"] as $st)
+          similar_text ($st, $wk["searchterm"], $similarity);
+
+          if ($similarity > MIN_SIMILAR && $wk["id"] != $_REQUEST["id"])
+          {
+            ++$isim;
+            $wkdb[round ($similarity). str_pad($isim, 10, "0")] = array_merge ($wk, Array ("similarity" => round ($similarity)));
+          }
+        }
       }
 
-      similar_text ($works[0]["searchtitle"], $wk["searchtitle"], $similarity);
+      krsort ($wkdb, SORT_NUMERIC);
 
-      if ($similarity > MIN_SIMILAR && $wk["id"] != $_REQUEST["id"])
-      {
-        ++$isim;
-        $wkdb[round ($similarity). str_pad($isim, 10, "0")] = array_merge ($wk, Array ("similarity" => round ($similarity)));
-      }
+      $apireturn["similarlytitled"] = array_values (arraydelete ($wkdb, ["searchterms"]));
     }
-
-    krsort ($wkdb, SORT_NUMERIC);
-
-    $apireturn["similarlytitled"] = array_values ($wkdb);
   }
   
   echo savecache ("/work/detail/{$_REQUEST["id"]}.json", apireturn ($apireturn));
