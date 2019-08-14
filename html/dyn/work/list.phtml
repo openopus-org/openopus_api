@@ -62,7 +62,7 @@
 
   // listing works
 
-  $sql = "select title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, work.id as id, genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name from composer, work where work.composer_id = composer.id $where order by composer.name asc, $order title asc";
+  $sql = "select title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, work.id as id, genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name, composer.portrait, composer.birth, composer.death from composer, work where work.composer_id = composer.id $where order by composer.name asc, $order title asc";
   $works = mysqlfetch ($mysql, $sql);
 
   if (!$works)
@@ -83,10 +83,14 @@
         (
           "id"=>$works[0]["composer"],
           "name"=>$works[0]["name"],
-          "epoch"=>$works[0]["epoch"]
+          "epoch"=>$works[0]["epoch"],
+          "birth"=>$works[0]["birth"],
+          "death"=>$works[0]["death"],
+          "complete_name"=>$works[0]["complete_name"],
+          "portrait"=>$works[0]["portrait"]
         );
 
-      $apireturn["works"] = arraydelete ($works, ["composer", "name", "complete_name", "epoch"]);
+      $apireturn["works"] = arraydelete ($works, ["composer", "name", "epoch", "complete_name", "birth", "death", "portrait"]);
     }
 
     if (!$_REQUEST["composer"])
