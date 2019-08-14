@@ -3,7 +3,7 @@
 
   // listing genres
 
-  $sql = "select genre, composer.epoch, composer.id as composer, composer.name from composer, work where work.composer_id = composer.id and composer.id = '{$_REQUEST["composer"]}' group by genre order by genre asc";
+  $sql = "select genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name, composer.portrait, composer.birth, composer.death from composer, work where work.composer_id = composer.id and composer.id = '{$_REQUEST["composer"]}' group by genre order by genre asc";
   $genres = mysqlfetch ($mysql, $sql);
 
   if (!$genres)
@@ -21,7 +21,11 @@
       (
         "id"=>$genres[0]["composer"],
         "name"=>$genres[0]["name"],
-        "epoch"=>$genres[0]["epoch"]
+        "epoch"=>$genres[0]["epoch"],
+        "complete_name"=>$genres[0]["complete_name"],
+        "birth"=>$genres[0]["birth"],
+        "death"=>$genres[0]["death"],
+        "portrait"=>$genres[0]["portrait"]
       );
     $apireturn["genres"] = arraykeepvalues ($genres, ["genre"]);
 
