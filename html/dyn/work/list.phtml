@@ -95,6 +95,9 @@
 
     if (!$_REQUEST["composer"])
     {
+      $abstract = Array ();
+      $abstract_composers = Array ();
+
       foreach ($works as $work)
       {
         $apireturn["works"]["w:". $work["id"]] = Array (
@@ -104,7 +107,24 @@
           "subtitle" => $work["subtitle"],
           "genre" => $work["genre"]
         );
+
+        $abstract["c:". $work["composer"]] = $abstract["c:". $work["composer"]] + 1;
+
+        $abstract_composers["c:". $work["composer"]] = Array (
+          "name" => $work["name"],
+          "portrait" => $work["portrait"]);
       }
+
+      arsort ($abstract);
+
+      foreach ($abstract as $absid => $absqtd)
+      {
+        $apireturn["abstract"]["composers"]["portraits"][] = $abstract_composers[$absid]["portrait"];
+        $apireturn["abstract"]["composers"]["names"][] = $abstract_composers[$absid]["name"];
+      }
+
+      $apireturn["abstract"]["composers"]["rows"] = sizeof ($abstract);
+      $apireturn["abstract"]["works"] = Array ("rows" => array_sum ($abstract));
     }
 
     if ($_REQUEST["multiview"])
