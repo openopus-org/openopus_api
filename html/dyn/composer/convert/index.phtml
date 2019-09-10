@@ -2,14 +2,14 @@
   include_once ("../../../../lib/inc.php");
   include_once (BASEDIR. "/lib/google.php");
 
-  define (DIR, "/var/www/concertmaster_player/html/player/img/portraits/");
+  define (DIR, "/var/www/openopus_api/portraits/");
   $files = scandir (DIR);
 
-  $composers = mysqlfetch ($mysql, "select id, name from composer where portrait is null order by name asc");
+  $composers = mysqlfetch ($mysql, "select id, name from composer order by name asc");
 
   foreach ($composers as $composer)
   {
-    $file = $files [array_search (slug ($composer["name"]). ".jpg", $files, TRUE)];
+    $file = $files [array_search (slug ($composer["name"]). ".png", $files, TRUE)];
     
     if (file_exists (DIR. $file) && $file != ".")
     { 

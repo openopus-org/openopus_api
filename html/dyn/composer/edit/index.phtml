@@ -4,7 +4,7 @@
 
   // identity check
 
-  if (!postcheck ($_REQUEST, ["cid", "name", "complete_name", "birth", "epoch", "country"]))
+  if (!postcheck ($_REQUEST, ["cid", "name", "complete_name", "birth", "epoch"]))
   {
     $apireturn["status"]["success"] = "false";
     $apireturn["status"]["error"] = "Missing fields";
