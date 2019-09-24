@@ -35,7 +35,7 @@
 
         if (strtolower (end($matches[2])) == "op" || strtolower (end($matches[2])) == "opus")
         {
-          preg_match_all ('/(no\.)( )*([0-9]*)+/i', $works[0]["title"], $opmatches);
+          preg_match_all ('/(no\.)( )*([0-9]*)/i', $works[0]["title"], $opmatches);
           
           if (sizeof ($opmatches[0]))
           {
