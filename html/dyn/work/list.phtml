@@ -12,11 +12,13 @@
     {
       $where = "and work.popular = '1'";
       $order = "genre asc, ";
+      $neworder = "genre";
     }
     elseif ($_REQUEST["genre"] == "Recommended")
     {
       $where = "and work.recommended = '1'";
       $order = "genre asc, ";
+      $neworder = "genre";
     }
     elseif ($_REQUEST["genre"] != "all")
     {
@@ -26,8 +28,8 @@
 
   if ($_REQUEST["search"])
   {
-    $_REQUEST["search"] = preg_replace ('/(\s+)/', ' ', $_REQUEST["search"]);
-    
+    $_REQUEST["search"] = trim (preg_replace ('/(\s+)/', ' ', $_REQUEST["search"]));
+
     if (strlen ($_REQUEST["search"]) > 3)
     {
       $where .= "and match (title, subtitle) against ('+". str_replace (' ', '* +', $_REQUEST["search"]). "*' IN BOOLEAN MODE)";
@@ -47,10 +49,12 @@
 
     $where .= "and work.id in (". mysqli_real_escape_string ($mysql, $_REQUEST["ids"]). ")";
     $order = "genre asc, ";
+    $neworder = "genre";
   }
   elseif ($_REQUEST["genre"] != "Popular" && $_REQUEST["genre"] != "Recommended")
   {
     $order = "recommended desc, ";
+    $neworder = "recommended";
   }
 
   if ($_REQUEST["composer"])
@@ -87,10 +91,25 @@
 
     foreach ($wktitles as $wktttk => $wkttt)
     {
-      $newworks[] = $works[$wktttk];
+      $newworks[$works[$wktttk][$neworder]][] = $works[$wktttk];
     }
 
-    $works = $newworks;
+    if ($neworder == "genre") 
+    {
+      arsort ($newworks);
+    }
+    elseif ($neworder == "recommended")
+    {
+      asort ($newworks);
+    }
+
+    $nworks = Array ();
+    foreach ($newworks as $nwks)
+    {
+      $nworks = array_merge ($nworks, $nwks);
+    }
+
+    $works = $nworks;
 
     // there are composers, go list'em
 
