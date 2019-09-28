@@ -26,9 +26,12 @@
 
   if ($_REQUEST["search"])
   {
+    $_REQUEST["search"] = preg_replace ('/(\s+)/', ' ', $_REQUEST["search"]);
+    
     if (strlen ($_REQUEST["search"]) > 3)
     {
-      $where .= "and match (title, subtitle) against ('{$_REQUEST["search"]}*' IN BOOLEAN MODE)";
+      $where .= "and match (title, subtitle) against ('+". str_replace (' ', '* +', $_REQUEST["search"]). "*' IN BOOLEAN MODE)";
+      $apireturn["request"]["search"] = $_REQUEST["search"];
     }
     else
     {
@@ -73,6 +76,22 @@
   }
   else
   {
+    // sorting works in natural order
+
+    foreach ($works as $wkskey => $wksrt)
+    {
+      $wktitles[$wkskey] = $wksrt["title"];
+    }
+
+    natcasesort ($wktitles);
+
+    foreach ($wktitles as $wktttk => $wkttt)
+    {
+      $newworks[] = $works[$wktttk];
+    }
+
+    $works = $newworks;
+
     // there are composers, go list'em
 
     $apireturn["status"] = Array ("success"=>"true", "source"=>"db");

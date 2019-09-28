@@ -22,12 +22,14 @@
   }
   else if ($_REQUEST["search"])
   {
+    $_REQUEST["search"] = preg_replace ('/(\s+)/', ' ', $_REQUEST["search"]);
+
     $apireturn["request"]["type"] = "search";
     $apireturn["request"]["item"] = $_REQUEST["search"];
 
     if (strlen ($_REQUEST["search"]) > 3)
     {
-      $where = "where match (name, complete_name) against ('{$_REQUEST["search"]}*' IN BOOLEAN MODE)";
+      $where = "where match (name, complete_name) against ('+". str_replace (' ', '* +', $_REQUEST["search"]). "*' IN BOOLEAN MODE)";
     }
     else
     {
