@@ -96,11 +96,11 @@
 
     if ($neworder == "genre") 
     {
-      krsort ($newworks);
+      ksort ($newworks);
     }
     elseif ($neworder == "recommended")
     {
-      ksort ($newworks);
+      krsort ($newworks);
     }
 
     $nworks = Array ();
