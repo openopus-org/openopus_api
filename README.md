@@ -24,7 +24,7 @@ cd /var/www/openopus_api/
 composer install
 ```
 
-5. Create an inc.php file from the example:
+5. Create an `inc.php` file from the example:
 
 ```bash
 cd /var/www/openopus_api/lib/
