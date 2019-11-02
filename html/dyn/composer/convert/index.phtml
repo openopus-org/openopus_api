@@ -2,10 +2,10 @@
   include_once ("../../../../lib/inc.php");
   include_once (BASEDIR. "/lib/google.php");
 
-  define (DIR, "/var/www/openopus_api/portraits/");
+  define (DIR, BASEDIR. "/portraits/");
   $files = scandir (DIR);
 
-  $composers = mysqlfetch ($mysql, "select id, name from composer where id=54 order by name asc");
+  $composers = mysqlfetch ($mysql, "select id, name from composer order by name asc");
 
   foreach ($composers as $composer)
   {
