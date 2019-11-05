@@ -35,7 +35,7 @@
     $apireturn["status"]["success"] = "true";
     $apireturn["status"]["source"] = "db";
     $apireturn["performers"] = ["readable"=>$pfs, "digest"=>arrayobjtoassoc($pfs, ["name", "role"])];
-    $apireturn["status"]["rows"] = sizeof ($apireturn["performers"]);
+    $apireturn["status"]["rows"] = sizeof ($apireturn["performers"]["digest"]);
   }
 
   echo apireturn ($apireturn);
