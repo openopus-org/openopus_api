@@ -46,7 +46,7 @@ https://youropenopusfork.com/dyn/composer/importdump/
 
 Replace the domain above with the one your app will use.
 
-Additionally, you can download the data directly trough the API:
+Additionally, you can download the data directly through the API:
 
 ```
 https://api.openopus.org/work/dump.json
