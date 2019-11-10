@@ -1,0 +1,60 @@
+<?
+  include_once ("../../../lib/inc.php");
+
+  $apireturn["request"]["type"] = "dump";
+
+  // listing works
+
+  $sql = "select composer.id as composer, composer.popular as comp_popular, composer.recommended as comp_recommended, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, genre, composer.epoch, composer.name, composer.complete_name, composer.portrait, composer.birth, composer.death from composer, work where work.composer_id = composer.id order by composer.name asc, title asc";
+  $works = mysqlfetch ($mysql, $sql);
+
+  if (!$works)
+  {
+    // if no composers exist, return an error
+
+    $apireturn["status"] = Array ("success"=>"false", "error"=>"No works found");
+  }
+  else
+  {
+    // there are composers, go list'em
+
+    $apireturn["status"] = Array ("success"=>"true", "source"=>"db");
+    $row = -1;
+
+    foreach ($works as $work)
+    {
+      if ($lastcid != $work["composer"])
+      {
+        $row = $row + 1;
+
+        $apireturn["composers"][$row] = Array
+        (
+          "name"=>$work["name"],
+          "complete_name"=>$work["complete_name"],
+          "epoch"=>$work["epoch"],
+          "birth"=>$work["birth"],
+          "death"=>$work["death"],
+          "popular"=>$work["comp_popular"],
+          "recommended"=>$work["comp_recommended"],
+        );
+      }
+      else 
+      {
+        $apireturn["composers"][$row]["works"][] = Array 
+        (
+          "title" => $work["title"],
+          "subtitle" => $work["subtitle"],
+          "searchterms" => $work["searchterms"],
+          "popular" => $work["popular"],
+          "recommended" => $work["recommended"],
+          "genre" => $work["genre"] 
+        );
+      }
+
+      $lastcid = $work["composer"];
+    }
+
+    $apireturn["status"]["rows"] = sizeof ($works);
+  }
+
+  echo savecache ("/work/dump.json", apireturn ($apireturn));

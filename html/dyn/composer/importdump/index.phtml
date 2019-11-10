@@ -1,0 +1,44 @@
+<?
+  exit (); // remove this line to allow the script to run
+  
+  include_once ("../../../../lib/inc.php");
+
+  define ("OPENOPUS", "http://api.openopus.org");
+  $data = openopusdownparse ("work/dump.json");
+
+  foreach ($data["composers"] as $composer) 
+  {
+    $insertcomposer = Array 
+      (
+        "name" => $composer["name"],
+        "complete_name" => $composer["complete_name"],
+        "birth" => $composer["birth"],
+        "death" => $composer["death"],
+        "epoch" => $composer["epoch"],
+        "recommended" => $composer["recommended"],
+        "popular" => $composer["popular"]
+      );
+
+    $cid = mysqlinsert ($mysql, "newcomposer", $insertcomposer);
+
+    foreach ($composer["works"] as $work)
+    {
+      $insertwork = Array 
+        (
+          "composer_id" => $cid,
+          "title" => $work["title"],
+          "subtitle" => $work["subtitle"],
+          "searchterms" => $work["searchterms"],
+          "popular" => $work["popular"],
+          "recommended" => $work["recommended"],
+          "genre" => $work["genre"]
+        );
+
+      mysqlinsert ($mysql, "newwork", $insertwork);
+    }
+  }
+
+  $apireturn["status"]["success"] = "true";
+  $apireturn["status"]["inserted_rows"] = $data["status"]["rows"];
+
+  echo apireturn ($apireturn);

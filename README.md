@@ -33,6 +33,25 @@ vim inc.php
 ```
 6. Change variable values in the `lib/inc.php` accordingly to your webserver
 
+### Data import
+
+To import the full Open Opus dataset to your fork, simply:
+
+1. Remove the 2nd line from the `html/dyn/composer/importdump/index.phtml` file
+2. Open the following URL in your web browser:
+
+```
+https://youropenopusfork.com/dyn/composer/importdump/
+```
+
+Replace the domain above with the one your app will use.
+
+Additionally, you can download the data directly trough the API:
+
+```
+https://api.openopus.org/work/dump.json
+```
+
 ### Google Cloud Storage
 
 The Open Opus API uses [Google Cloud](https://cloud.google.com/) to store image files. In order to use it, you must:
@@ -42,10 +61,13 @@ The Open Opus API uses [Google Cloud](https://cloud.google.com/) to store image 
 
 ### Composer portraits
 
-There are 220 composer portraits in the `portraits` directory. If you want to upload them to your cloud, just open the following URL in your web browser:
+There are 220 composer portraits in the `portraits` directory. If you want to upload them to your cloud:
+
+1. Remove the 2nd line from the `html/dyn/composer/portraitupload/index.phtml` file
+2. Open the following URL in your web browser:
 
 ```
-https://youropenopusfork.com/dyn/composers/convert/
+https://youropenopusfork.com/dyn/composer/portraitupload/
 ```
 
 Replace the domain above with the one your app will use.

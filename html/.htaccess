@@ -49,5 +49,8 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule work/list/ids/(.*).json dyn/work/list.phtml?ids=$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule work/dump.json dyn/work/dump.phtml [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule genre/list/composer/(.*).json dyn/genre/list.phtml?composer=$1 [L]
 </IfModule>
