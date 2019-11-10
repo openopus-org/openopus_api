@@ -10,7 +10,7 @@ It's a public RESTful API which returns data in JSON format. There is a [wiki](h
 ## How to build
 
 1. Fork and clone this git repository to your webserver (for example, in the `/var/www/` folder)
-2. The Concertmaster API uses a shared [Open Opus utilities library](https://github.com/openopus-org/openopus_utils). Clone it in the same directory
+2. The Open Opus API uses a shared [Open Opus utilities library](https://github.com/openopus-org/openopus_utils). Clone it in the same directory
 3. Create a MySQL database (for example, `openopus`) and load its strucuture
 
 ```bash
