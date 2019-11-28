@@ -3,6 +3,7 @@ html/work/*
 html/composer/*
 log/*
 lib/inc.php
+lib/patrons.php
 composer.lock
 vendor/*
 keys/*

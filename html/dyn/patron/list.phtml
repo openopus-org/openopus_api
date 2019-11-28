@@ -1,0 +1,15 @@
+<?
+  include_once ("../../../lib/inc.php");
+
+  if (file_exists (LIB. "/patrons.php"))
+  {
+    include_once (LIB. "/patrons.php");
+    $apireturn["patrons"] = $patrons;
+    $apireturn["status"]["rows"] = sizeof ($apireturn["patrons"]);
+  }
+  else 
+  {
+    $apireturn["status"]["rows"] = 0;
+  }
+  
+  echo savecache ("/patron/list.json", apireturn ($apireturn));
