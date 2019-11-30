@@ -4,6 +4,8 @@
   if (file_exists (LIB. "/patrons.php"))
   {
     include_once (LIB. "/patrons.php");
+    shuffle ($patrons);
+    
     $apireturn["patrons"] = $patrons;
     $apireturn["status"]["rows"] = sizeof ($apireturn["patrons"]);
   }
