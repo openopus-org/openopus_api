@@ -32,30 +32,7 @@
       $pfs[] = ["name"=>$pf, "role"=>guessrole ($pf, $rldb)];
     }
 
-    foreach ($pfs as $pfr)
-    {
-      switch ($pfr["role"])
-      {
-        case "Conductor":
-          $pfs_last[] = $pfr;
-        break;
-
-        case "Orchestra":
-          $pfs_prelast[] = $pfr;
-        break;
-
-        case "Ensemble":
-        case "Choir":
-        case "Chorus":
-          $pfs_middle[] = $pfr;
-        break;
-
-        default:
-          $pfs_first[] = $pfr;
-      }
-    }
-
-    $pfs = array_merge ((array)$pfs_first, (array)$pfs_middle, (array)$pfs_prelast, (array)$pfs_last);
+    $pfs = orderperformers ($pfs);
 
     $apireturn["status"]["success"] = "true";
     $apireturn["status"]["source"] = "db";
