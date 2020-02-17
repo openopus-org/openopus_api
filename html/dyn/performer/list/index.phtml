@@ -32,9 +32,28 @@
       $pfs[] = ["name"=>$pf, "role"=>guessrole ($pf, $rldb)];
     }
 
+    foreach ($pfs as $pfr)
+    {
+      switch ($pfr["role"])
+      {
+        case "Conductor":
+          $pfs_last[] = $pfr;
+        break;
+
+        case "Orchestra":
+        case "Ensemble":
+        case "Choir":
+        case "Chorus":
+          $pfs_middle[] = $pfr;
+
+        default:
+          $pfs_first[] = $pfr;
+      }
+    }
+
     $apireturn["status"]["success"] = "true";
     $apireturn["status"]["source"] = "db";
-    $apireturn["performers"] = ["readable"=>$pfs, "digest"=>arrayobjtoassoc($pfs, ["name", "role"])];
+    $apireturn["performers"] = ["readable"=>array_merge ($pfs_first, $pfs_middle, $pfs_last), "digest"=>arrayobjtoassoc($pfs, ["name", "role"])];
     $apireturn["status"]["rows"] = sizeof ($apireturn["performers"]["digest"]);
   }
 
