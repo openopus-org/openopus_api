@@ -41,6 +41,9 @@
         break;
 
         case "Orchestra":
+          $pfs_prelast[] = $pfr;
+        break;
+
         case "Ensemble":
         case "Choir":
         case "Chorus":
@@ -54,7 +57,7 @@
 
     $apireturn["status"]["success"] = "true";
     $apireturn["status"]["source"] = "db";
-    $apireturn["performers"] = ["readable"=>array_merge ($pfs_first, $pfs_middle, $pfs_last), "digest"=>arrayobjtoassoc($pfs, ["name", "role"])];
+    $apireturn["performers"] = ["readable"=>array_merge ($pfs_first, $pfs_middle, $pfs_prelast, $pfs_last), "digest"=>arrayobjtoassoc($pfs, ["name", "role"])];
     $apireturn["status"]["rows"] = sizeof ($apireturn["performers"]["digest"]);
   }
 
