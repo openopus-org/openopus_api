@@ -55,9 +55,11 @@
       }
     }
 
+    $pfs = array_merge ((array)$pfs_first, (array)$pfs_middle, (array)$pfs_prelast, (array)$pfs_last);
+
     $apireturn["status"]["success"] = "true";
     $apireturn["status"]["source"] = "db";
-    $apireturn["performers"] = ["readable"=>array_merge ((array)$pfs_first, (array)$pfs_middle, (array)$pfs_prelast, (array)$pfs_last), "digest"=>arrayobjtoassoc($pfs, ["name", "role"])];
+    $apireturn["performers"] = ["readable"=>$pfs, "digest"=>arrayobjtoassoc($pfs, ["name", "role"])];
     $apireturn["status"]["rows"] = sizeof ($apireturn["performers"]["digest"]);
   }
 
