@@ -33,33 +33,6 @@ vim inc.php
 ```
 6. Change variable values in the `lib/inc.php` accordingly to your webserver
 
-### Cache and cache cleaning routines
-
-The Open Opus API can cache its results, saving server resources. In order to activate this feature you must:
-
-1. Give ownership of the public directory to the web server group (e.g., `www-data`):
-
-```bash
-chgrp www-data /var/www/openopus_api/html -R
-```
-2. Set the environment variables for root:
-
-```bash
-vim /etc/environment
-```
-
-```bash
-export BASEOPENOPUSDIR="/var/www/openopus_api/html"
-```
-
-3. Update crontab for root (this will set the cache cleaning routines)
-
-```bash
-# m     h       dom     mon     dow     command
-0       2       1       *       *       /var/www/openopus_api/cln/db.sh
-0       1       *       *       *       php /var/www/openopus_api/cln/omnisearch.php
-```
-
 ### MySQL settings
 
 Open Opus search functionality needs special configurations on your MySQL database. Update your server's `my.cnf` file (paths may vary on different operating systems) to include two extra directives:
@@ -90,7 +63,7 @@ https://api.openopus.org/work/dump.json
 
 #### Search data
 
-The search database will be renewed automatically every night. To make the first import, simply run on command line:
+The search database will be renewed automatically every night (see "cache cleaning routines", below). To make the first import, simply run on command line:
 
 ```bash
 php /var/www/openopus_api/cln/omnisearch.php
@@ -115,6 +88,33 @@ https://youropenopusfork.com/dyn/composer/portraitupload/
 ```
 
 Replace the domain above with the one your app will use.
+
+### Cache and cache cleaning routines
+
+The Open Opus API can cache its results, saving server resources. In order to activate this feature you must:
+
+1. Give ownership of the public directory to the web server group (e.g., `www-data`):
+
+```bash
+chgrp www-data /var/www/openopus_api/html -R
+```
+2. Set the environment variables for root:
+
+```bash
+vim /etc/environment
+```
+
+```bash
+export BASEOPENOPUSDIR="/var/www/openopus_api/html"
+```
+
+3. Update crontab for root (this will set the cache cleaning routines)
+
+```bash
+# m     h       dom     mon     dow     command
+0       2       1       *       *       /var/www/openopus_api/cln/db.sh
+0       1       *       *       *       php /var/www/openopus_api/cln/omnisearch.php
+```
 
 ## Domains
 
