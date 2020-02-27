@@ -56,4 +56,7 @@ RewriteRule genre/list/composer/(.*).json dyn/genre/list.phtml?composer=$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule patron/list.json dyn/patron/list.phtml [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule omnisearch/(.*)/(.*).json dyn/omnisearch/list.phtml?search=$1&offset=$2 [L]
 </IfModule>

@@ -13,7 +13,7 @@
   // global constants
 
   define ("SOFTWARENAME", "Open Opus");
-  define ("SOFTWAREVERSION", "1.19.11");
+  define ("SOFTWAREVERSION", "1.20");
   define ("USERAGENT", SOFTWARENAME. "/" . SOFTWAREVERSION. " ( ". SOFTWAREMAIL. " )");
   define ("API_RETURN", "json");
   define ("MIN_SIMILAR", 20);

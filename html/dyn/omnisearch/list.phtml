@@ -1,0 +1,84 @@
+<?
+  include_once ("../../../lib/inc.php");
+  
+  $apireturn["request"]["type"] = "omnisearch";
+  $apireturn["request"]["search"] = $_REQUEST["search"];
+  $apireturn["request"]["offset"] = $_REQUEST["offset"];
+
+  if ($_REQUEST["search"])
+  {
+    $_REQUEST["search"] = trim (preg_replace ('/(\s+)/', ' +', preg_replace ('(\b[^\d\W]+\b)', '$0*', $_REQUEST["search"])));
+
+    if (strlen ($_REQUEST["search"]) > 3)
+    {
+      $match = "match (summary) against ('+". $_REQUEST["search"]. "'";
+      $fullmatch = $match. ")";
+      $wherematch = "{$match} IN BOOLEAN MODE)";
+    }
+    else
+    {
+      $goquery = false;
+      $apireturn["status"] = Array ("success"=>"false", "error"=>"Too short search term");
+    }
+  }
+
+  // listing results
+
+  $sql = "SELECT if(omnisearch.work_id is null, 1, 0) iscomposer, composer.id composer_id, name, complete_name, birth, death, epoch, portrait, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, work.id work_id, genre, ({$fullmatch}) as relevance FROM composer, omnisearch LEFT JOIN work ON omnisearch.work_id = work.id where {$wherematch} and composer.id = omnisearch.composer_id order by iscomposer desc, relevance desc, recommended desc, popular desc, name asc, title asc limit 20 offset {$_REQUEST["offset"]}";
+  $results = mysqlfetch ($mysql, $sql);
+
+  if (!$results)
+  {
+    // if no results, return an error
+
+    $apireturn["status"] = Array ("success"=>"false", "error"=>"Nothing found");
+  }
+  else
+  {
+    // there are results, go list'em
+
+    $apireturn["status"] = Array ("success"=>"true", "source"=>"db");
+    $apireturn["status"]["rows"] = sizeof ($results);
+
+    foreach ($results as $res)
+    {
+        $composer = Array (
+            "id" => $res["composer_id"], 
+            "name" => $res["name"], 
+            "complete_name" => $res["complete_name"], 
+            "epoch" => $res["epoch"],
+            "birth" => $res["birth"], 
+            "death" => $res["death"], 
+            "portrait" => $res["portrait"], 
+        );
+
+        if ($res["iscomposer"])
+        {
+            $work = [];
+        }
+        else 
+        {
+            $work = Array (
+                "id" => $res["work_id"],
+                "title" => $res["title"],
+                "subtitle" => $res["subtitle"],
+                "genre" => $res["genre"],
+                "popular" => $res["popular"],
+                "recommended" => $res["recommended"],
+                "searchterms" => $res["searchterms"]
+            );
+        }
+        
+        $apireturn["results"][] = Array (
+            "composer" => $composer,
+            "work" => $work
+        );
+    }
+
+    if (sizeof ($results) == 20)
+    {
+        $apireturn["next"] = $_REQUEST["offset"] + 20;
+    }
+  }
+
+  echo savecache ("/omnisearch/{$_REQUEST["search"]}/{$_REQUEST["offset"]}.json", apireturn ($apireturn));
