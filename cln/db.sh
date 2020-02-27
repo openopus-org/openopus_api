@@ -2,3 +2,4 @@
 rm "$BASEOPENOPUSDIR"/composer -rf
 rm "$BASEOPENOPUSDIR"/genre -rf
 rm "$BASEOPENOPUSDIR"/work -rf
+rm "$BASEOPENOPUSDIR"/omnisearch -rf

@@ -1,6 +1,4 @@
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -18,9 +16,15 @@ CREATE TABLE `composer` (
   `death` date DEFAULT NULL,
   `epoch` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `country` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `recommended` tinyint(1) UNSIGNED DEFAULT 0,
-  `popular` tinyint(1) UNSIGNED NOT NULL DEFAULT 0
+  `recommended` tinyint(1) UNSIGNED DEFAULT '0',
+  `popular` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `omnisearch` (
+  `summary` varchar(3000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `composer_id` int(10) UNSIGNED NOT NULL,
+  `work_id` int(10) UNSIGNED DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `performer` (
   `id` int(10) NOT NULL,
@@ -36,8 +40,8 @@ CREATE TABLE `work` (
   `searchterms` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `genre` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `year` date DEFAULT NULL,
-  `recommended` tinyint(1) UNSIGNED NOT NULL DEFAULT 0,
-  `popular` tinyint(1) UNSIGNED NOT NULL DEFAULT 0
+  `recommended` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+  `popular` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -53,6 +57,8 @@ ALTER TABLE `composer`
   ADD KEY `popular` (`popular`);
 ALTER TABLE `composer` ADD FULLTEXT KEY `name_2` (`name`,`complete_name`);
 
+ALTER TABLE `omnisearch` ADD FULLTEXT KEY `summary` (`summary`);
+
 ALTER TABLE `performer`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`name`),
@@ -66,19 +72,15 @@ ALTER TABLE `work`
   ADD KEY `year` (`year`),
   ADD KEY `recommended` (`recommended`),
   ADD KEY `popular` (`popular`);
-ALTER TABLE `work` ADD FULLTEXT KEY `title_2` (`title`,`subtitle`);
+ALTER TABLE `work` ADD FULLTEXT KEY `titlesearch` (`title`,`subtitle`);
 
 
 ALTER TABLE `composer`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
 ALTER TABLE `performer`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT;
-
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36631;
 ALTER TABLE `work`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-COMMIT;
-
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28084;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

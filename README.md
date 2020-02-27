@@ -33,45 +33,6 @@ vim inc.php
 ```
 6. Change variable values in the `lib/inc.php` accordingly to your webserver
 
-### Data import
-
-To import the full Open Opus dataset to your fork, simply:
-
-1. Remove the 2nd line from the `html/dyn/composer/importdump/index.phtml` file
-2. Open the following URL in your web browser:
-
-```
-https://youropenopusfork.com/dyn/composer/importdump/
-```
-
-Replace the domain above with the one your app will use.
-
-Additionally, you can download the data directly through the API:
-
-```
-https://api.openopus.org/work/dump.json
-```
-
-### Google Cloud Storage
-
-The Open Opus API uses [Google Cloud](https://cloud.google.com/) to store image files. In order to use it, you must:
-
-1. Create a `keys` directory in `/var/www/openopus_api/` and put your Google Cloud `keyfile.json` in it
-2. Change the Google Cloud variables in the `lib/inc.php` accordingly to your Google account
-
-### Composer portraits
-
-There are 220 composer portraits in the `portraits` directory. If you want to upload them to your cloud:
-
-1. Remove the 2nd line from the `html/dyn/composer/portraitupload/index.phtml` file
-2. Open the following URL in your web browser:
-
-```
-https://youropenopusfork.com/dyn/composer/portraitupload/
-```
-
-Replace the domain above with the one your app will use.
-
 ### Cache and cache cleaning routines
 
 The Open Opus API can cache its results, saving server resources. In order to activate this feature you must:
@@ -95,8 +56,65 @@ export BASEOPENOPUSDIR="/var/www/openopus_api/html"
 
 ```bash
 # m     h       dom     mon     dow     command
-0       0       1       *       *       /var/www/openopus_api/cln/db.sh
+0       2       1       *       *       /var/www/openopus_api/cln/db.sh
+0       1       *       *       *       php /var/www/openopus_api/cln/omnisearch.php
 ```
+
+### MySQL settings
+
+Open Opus search functionality needs special configurations on your MySQL database. Update the my.cnf of your server (paths may vary on different operating systems) to include two extra directives:
+
+```
+innodb_ft_min_token_size = 1
+innodb_ft_enable_stopword = 0
+```
+
+### Data import
+
+To import the full Open Opus dataset to your fork, simply:
+
+1. Remove the 2nd line from the `html/dyn/composer/importdump/index.phtml` file
+2. Open the following URL in your web browser:
+
+```
+https://youropenopusfork.com/dyn/composer/importdump/
+```
+
+Replace the domain above with the one your app will use.
+
+Additionally, you can download the data directly through the API:
+
+```
+https://api.openopus.org/work/dump.json
+```
+
+#### Search data
+
+The search database will be renewed automatically every night. To make the first import, simply run on command line:
+
+```bash
+php /var/www/openopus_api/cln/omnisearch.php
+```
+
+### Google Cloud Storage
+
+The Open Opus API uses [Google Cloud](https://cloud.google.com/) to store image files. In order to use it, you must:
+
+1. Create a `keys` directory in `/var/www/openopus_api/` and put your Google Cloud `keyfile.json` in it
+2. Change the Google Cloud variables in the `lib/inc.php` accordingly to your Google account
+
+### Composer portraits
+
+There are 220 composer portraits in the `portraits` directory. If you want to upload them to your cloud:
+
+1. Remove the 2nd line from the `html/dyn/composer/portraitupload/index.phtml` file
+2. Open the following URL in your web browser:
+
+```
+https://youropenopusfork.com/dyn/composer/portraitupload/
+```
+
+Replace the domain above with the one your app will use.
 
 ## Domains
 
