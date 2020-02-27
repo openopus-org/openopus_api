@@ -7,6 +7,7 @@
 
   if ($_REQUEST["search"])
   {
+    $_REQUEST["originalsearch"] = $_REQUEST["search"];
     $_REQUEST["search"] = trim (preg_replace ('/(\s+)/', ' +', preg_replace ('(\b[^\d\W]+\b)', '$0*', $_REQUEST["search"])));
 
     if (strlen ($_REQUEST["search"]) > 3)
@@ -81,4 +82,4 @@
     }
   }
 
-  echo savecache ("/omnisearch/{$_REQUEST["search"]}/{$_REQUEST["offset"]}.json", apireturn ($apireturn));
+  echo savecache ("/omnisearch/{$_REQUEST["originalsearch"]}/{$_REQUEST["offset"]}.json", apireturn ($apireturn));
