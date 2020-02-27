@@ -62,7 +62,7 @@ export BASEOPENOPUSDIR="/var/www/openopus_api/html"
 
 ### MySQL settings
 
-Open Opus search functionality needs special configurations on your MySQL database. Update the my.cnf of your server (paths may vary on different operating systems) to include two extra directives:
+Open Opus search functionality needs special configurations on your MySQL database. Update your server's `my.cnf` file (paths may vary on different operating systems) to include two extra directives:
 
 ```
 innodb_ft_min_token_size = 1
