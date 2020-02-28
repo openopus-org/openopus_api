@@ -8,7 +8,7 @@
   if ($_REQUEST["search"])
   {
     $_REQUEST["originalsearch"] = $_REQUEST["search"];
-    $_REQUEST["search"] = trim (preg_replace ('/(\s+)/', ' +', preg_replace ('(\b[^\d\W]+\b)', '$0*', $_REQUEST["search"])));
+    $_REQUEST["search"] = preg_replace ('(\b[^\d\W]+\b)', '$0*', preg_replace ('/(\s+)/', ' +', trim ($_REQUEST["search"])));
 
     if (strlen ($_REQUEST["search"]) > 3)
     {
