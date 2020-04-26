@@ -25,7 +25,7 @@
     {
       preg_match_all (CATALOGUE_REGEX, $works[0]["title"], $matches);
 
-      if (sizeof ($matches[0]))
+      if (sizeof ($matches[0]) && strlen(trim(end($matches[8]))) > 1)
       {
         $works[0]["searchmode"] = "catalogue";
         $works[0]["catalogue"] = trim(end($matches[2]));
@@ -45,6 +45,12 @@
         }
 
         $works[0]["searchterms"] = [$search];
+      }
+      elseif (sizeof ($matches[0]))
+      {
+        $works[0]["searchmode"] = "title";
+        $works[0]["searchterms"] = [worksimplifier ($works[0]["title"]). " ". trim(end($matches[2])). " ". trim(end($matches[8]))];
+        $number = false;
       }
       else
       { 
