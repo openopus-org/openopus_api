@@ -43,6 +43,29 @@
 
     foreach ($results as $res)
     {
+      $composerstats[$res["composer_id"]] += 1;
+
+      $composers[$res["composer_id"]] = Array (
+          "id" => $res["composer_id"], 
+          "name" => $res["name"], 
+          "complete_name" => $res["complete_name"], 
+          "epoch" => $res["epoch"],
+          "birth" => $res["birth"], 
+          "death" => $res["death"], 
+          "portrait" => $res["portrait"], 
+      );
+    }
+
+    foreach ($composerstats as $cin => $cst)
+    {
+      if ($cst/$apireturn["status"]["rows"] <= 0.2)
+      {
+        unset($composers[$cin]);
+      }
+    }
+
+    foreach ($results as $res)
+    {
         $composer = Array (
             "id" => $res["composer_id"], 
             "name" => $res["name"], 
@@ -56,6 +79,7 @@
         if ($res["iscomposer"])
         {
             $work = null;
+            $featcomposers[] = $res["composer_id"];
         }
         else 
         {
@@ -74,6 +98,14 @@
             "composer" => $composer,
             "work" => $work
         );
+    }
+
+    foreach ($composers as $cpin => $cp)
+    {
+      if (!in_array ($cpin, $featcomposers))
+      {
+        array_unshift ($apireturn["results"], Array ("composer" => $cp, "work" => null));
+      }
     }
 
     if (sizeof ($results) == 20)
