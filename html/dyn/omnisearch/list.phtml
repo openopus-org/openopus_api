@@ -25,7 +25,7 @@
 
   // listing results
 
-  $sql = "SELECT if(omnisearch.work_id is null, 1, 0) iscomposer, composer.id composer_id, name, complete_name, birth, death, epoch, portrait, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, work.id work_id, genre, ({$fullmatch}) as relevance FROM composer, omnisearch LEFT JOIN work ON omnisearch.work_id = work.id where {$wherematch} and composer.id = omnisearch.composer_id order by iscomposer desc, relevance desc, recommended desc, popular desc, name asc, title asc limit 20 offset {$_REQUEST["offset"]}";
+  $sql = "SELECT if(omnisearch.work_id is null, 1, 0) iscomposer, composer.id composer_id, name, complete_name, birth, death, epoch, portrait, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, work.id work_id, genre FROM composer, omnisearch LEFT JOIN work ON omnisearch.work_id = work.id where {$wherematch} and composer.id = omnisearch.composer_id order by iscomposer desc, recommended desc, popular desc, name asc, title asc limit 20 offset {$_REQUEST["offset"]}";
   $results = mysqlfetch ($mysql, $sql);
 
   if (!$results)

@@ -139,11 +139,13 @@
       foreach ($works as $work)
       {
         $apireturn["works"]["w:". $work["id"]] = Array (
-          "composer" => ["id" => $work["composer"], "name" => $work["name"], "complete_name" => $work["complete_name"], "epoch" => $work["epoch"]],
+          "composer" => ["id" => $work["composer"], "name" => $work["name"], "complete_name" => $work["complete_name"], "epoch" => $work["epoch"], "birth" => $work["birth"], "death" => $work["death"], "portrait" => $work["portrait"]],
           "id" => $work["id"],
           "title" => $work["title"],
           "subtitle" => $work["subtitle"],
-          "genre" => $work["genre"]
+          "genre" => $work["genre"],
+          "popular" => $work["popular"],
+          "recommended" => $work["recommended"]
         );
 
         $abstract["c:". $work["composer"]] = $abstract["c:". $work["composer"]] + 1;
