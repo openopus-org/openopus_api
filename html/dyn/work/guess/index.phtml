@@ -1,0 +1,158 @@
+<?
+  include_once ("../../../../lib/inc.php");
+
+  $goquery = true;
+
+  // treating name list
+
+  if ($_REQUEST["works"])
+  {
+    $_REQUEST["works"] = json_decode ($_REQUEST["works"], true);
+
+    $apireturn["request"]["type"] = "works";
+  }
+  else
+  {
+    $apireturn["status"] = Array ("success"=>"false", "error"=>"Bad request");
+    $goquery = false;
+  }
+
+  if ($goquery)
+  {
+    // preparing the array
+
+    foreach ($_REQUEST["works"] as $works)
+    {
+        $reqcomps[str_replace ("-", "", slug ($works["composer"]))] = $works["composer"];
+        $reqworks[str_replace ("-", "", slug ($works["composer"]))][str_replace ("-", "", slug (worksimplifier ($works["title"])))] = $works["title"];
+    }
+
+    // finding the composers
+
+    $compdb = mysqlfetch ($mysql, "select id, name, complete_name, epoch from composer order by name asc");
+
+    foreach ($reqworks as $comp => $works)
+    {
+        foreach ($compdb as $cmp)
+        {
+            $compname = str_replace ("-", "", slug ($cmp["complete_name"]));
+            
+            similar_text ($comp, $compname, $similarity);
+
+            if ($similarity > 80 && $reqworks[$comp]["composer"]["similarity"] < round ($similarity))
+            {
+                $reqworks[$comp]["composer"] = Array 
+                (
+                    "similarity" => $similarity,
+                    "composer" => $cmp
+                );
+
+                $compids[] = $cmp["id"];
+            }
+        }
+    }
+
+    // finding the works
+
+    $wkdb = mysqlfetch ($mysql, "select composer_id, id, title, genre from work where composer_id in (". implode (",", $compids). ") order by composer_id asc, title asc");
+
+    foreach ($reqworks as $comp => $works)
+    {
+        if (isset ($works["composer"]))
+        {
+            foreach ($works as $work => $work_title)
+            {
+                if ($work != "composer")
+                {
+                    unset ($am_catalogue, $am_catalogue_number, $am_additional_number);
+
+                    preg_match_all (CATALOGUE_REGEX, $work_title, $am_matches);
+    
+                    // apple music: catalogue number
+    
+                    if (sizeof ($am_matches[0]))
+                    {
+                        $am_catalogue = trim(end($am_matches[2]));
+                        $am_catalogue_number = trim(end($am_matches[8]));
+                        
+                        if (strtolower (end($am_matches[2])) == "op" || strtolower (end($am_matches[2])) == "opus")
+                        {
+                            preg_match_all ('/(no\.)( )*([0-9]*)/i', $work_title, $opmatches);
+                            
+                            if (sizeof ($opmatches[0]))
+                            {
+                                $am_additional_number = trim(end($opmatches[3]));
+                            }
+                        }
+                    }
+    
+                    foreach ($wkdb as $wk)
+                    {
+                        if ($wk["composer_id"] == $works["composer"]["composer"]["id"])
+                        {
+                            unset ($wk["composer_id"]);
+                            unset ($catalogue, $catalogue_number, $additional_number);
+                            
+                            if (sizeof ($am_matches[0]))
+                            {
+                                // db: catalogue number 
+    
+                                preg_match_all (CATALOGUE_REGEX, $wk["title"], $matches);
+                                
+                                if (sizeof ($matches[0]))
+                                {
+                                    $catalogue = trim(end($matches[2]));
+                                    $catalogue_number = trim(end($matches[8]));
+                                    
+                                    if (strtolower (end($matches[2])) == "op" || strtolower (end($matches[2])) == "opus")
+                                    {
+                                        preg_match_all ('/(no\.|N\°|n\°)( )*([0-9]*)/i', $wk["title"], $opmatches);
+                                        
+                                        if (sizeof ($opmatches[0]))
+                                        {
+                                            $additional_number = trim(end($opmatches[3]));
+                                        }
+                                    }
+                                    
+                                    if (strtolower ($catalogue) == strtolower ($am_catalogue) && $catalogue_number == $am_catalogue_number && $additional_number == $am_additional_number)
+                                    {
+                                        $retworks[] = Array 
+                                        (
+                                            "requested" => ["composer" => $reqcomps[$comp], "title" => $work_title],
+                                            "guessed" => array_merge ($wk, ["composer" => $reqworks[$comp]["composer"]["composer"]])
+                                        );
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                $wktt = str_replace ("-", "", slug (worksimplifier ($wk["title"])));
+            
+                                similar_text ($work, $wktt, $similarity);
+
+                                if ($similarity > 80 && $retworks[$comp. "-". $work]["similarity"] < round ($similarity))
+                                {
+                                    $retworks[$comp. "-". $work] = Array 
+                                        (
+                                            "similarity" => $similarity,
+                                            "requested" => ["composer" => $reqcomps[$comp], "title" => $work_title],
+                                            "guessed" => array_merge ($wk, ["composer" => $reqworks[$comp]["composer"]["composer"]])
+                                        );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    $apireturn["works"] = arraydelete (array_values ($retworks), ["similarity"]);
+
+    $apireturn["status"]["success"] = "true";
+    $apireturn["status"]["source"] = "db";
+    $apireturn["status"]["rows"] = sizeof ($apireturn["works"]);
+  }
+
+  echo apireturn ($apireturn);
+

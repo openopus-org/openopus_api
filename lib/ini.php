@@ -18,7 +18,7 @@
   define ("API_RETURN", "json");
   define ("MIN_SIMILAR", 20);
   define ("PORTRAIT_W", 200);
-  define ("CATALOGUE_REGEX", "/\,( )*(twv|bwv|wwv|hwv|op|opus|cw|g|d|k|kv|hess|woo|fs|k\.anh|wq|w|sz|kk|s|h|rv|jb ([0-9]+\:)|jw ([a-z]+\/)|(hob\.([a-z])+\:))( |\.)*((([0-9]+)([a-z])?)(\:.+)?)/i");
+  define ("CATALOGUE_REGEX", "/( )*(twv|bwv|wwv|hwv|op|opus|cw|g|d|k|kv|hess|woo|fs|k\.anh|wq|w|sz|kk|s|h|rv|jb ([0-9]+\:)|jw ([a-z]+\/)|(hob\.([a-z])+\:))( |\.)*((([0-9]+)([a-z])?)(\:.+)?)/i");
 
   // performer roles keywords
 

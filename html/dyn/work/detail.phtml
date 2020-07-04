@@ -75,7 +75,6 @@
 
     if ($works[0]["searchmode"] == "title")
     {
-
       $query = "select id, title, ifnull(searchterms,'') searchterms from work where composer_id={$works[0]["composer"]} order by id desc";
       $worksdb = mysqlfetch ($mysql, $query);
 
