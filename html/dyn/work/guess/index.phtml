@@ -41,6 +41,7 @@
 
             if ($similarity > 80 && $reqworks[$comp]["composer"]["similarity"] < round ($similarity))
             {
+                $returncomp[$comp] = ["requested" => $reqcomps[$comp], "guessed" => $cmp];
                 $reqworks[$comp]["composer"] = Array 
                 (
                     "similarity" => $similarity,
@@ -51,6 +52,8 @@
             }
         }
     }
+
+    $apireturn["composers"] = array_values ($returncomp);
 
     // finding the works
 
