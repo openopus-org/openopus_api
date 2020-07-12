@@ -29,7 +29,7 @@
 
     // finding the composers
 
-    $compdb = mysqlfetch ($mysql, "select id, name, complete_name, epoch from composer order by name asc");
+    $compdb = mysqlfetch ($mysql, "select id, name, complete_name, epoch, birth, death, portrait from composer order by name asc");
 
     foreach ($reqworks as $comp => $works)
     {
@@ -57,7 +57,7 @@
 
     // finding the works
 
-    $wkdb = mysqlfetch ($mysql, "select composer_id, id, title, genre from work where composer_id in (". implode (",", $compids). ") order by composer_id asc, title asc");
+    $wkdb = mysqlfetch ($mysql, "select composer_id, id, title, subtitle, genre, popular, recommended from work where composer_id in (". implode (",", $compids). ") order by composer_id asc, title asc");
 
     foreach ($reqworks as $comp => $works)
     {
