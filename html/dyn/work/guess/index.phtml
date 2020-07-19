@@ -57,7 +57,7 @@
 
     // finding the works
 
-    $wkdb = mysqlfetch ($mysql, "select composer_id, id, title, subtitle, genre, popular, recommended from work where composer_id in (". implode (",", $compids). ") order by composer_id asc, title asc");
+    $wkdb = mysqlfetch ($mysql, "select composer_id, id, title, searchterms, subtitle, genre, popular, recommended from work where composer_id in (". implode (",", $compids). ") order by composer_id asc, title asc");
 
     foreach ($reqworks as $comp => $works)
     {
@@ -100,6 +100,7 @@
                             {
                                 // db: catalogue number 
     
+                                unset ($wk["searchterms"]);
                                 preg_match_all (CATALOGUE_REGEX, $wk["title"], $matches);
                                 
                                 if (sizeof ($matches[0]))
@@ -129,18 +130,27 @@
                             }
                             else
                             {
-                                $wktt = str_replace ("-", "", slug (worksimplifier ($wk["title"])));
-            
-                                similar_text ($work, $wktt, $similarity);
+                                // db: work title
 
-                                if ($similarity > 80 && $retworks[$comp. "-". $work]["similarity"] < round ($similarity))
+                                $titles = $wk["title"]. ", ". $wk["searchterms"];
+                                
+                                foreach (explode (",", $titles) as $tit)
                                 {
-                                    $retworks[$comp. "-". $work] = Array 
-                                        (
-                                            "similarity" => $similarity,
-                                            "requested" => ["composer" => $reqcomps[$comp], "title" => $work_title],
-                                            "guessed" => array_merge ($wk, ["composer" => $reqworks[$comp]["composer"]["composer"]])
-                                        );
+                                    $wktt = str_replace ("-", "", slug (worksimplifier ($tit)));
+            
+                                    similar_text ($work, $wktt, $similarity);
+    
+                                    if ($similarity > 80 && $retworks[$comp. "-". $work]["similarity"] < round ($similarity))
+                                    {
+                                        unset ($wk["searchterms"]);
+
+                                        $retworks[$comp. "-". $work] = Array 
+                                            (
+                                                "similarity" => $similarity,
+                                                "requested" => ["composer" => $reqcomps[$comp], "title" => $work_title],
+                                                "guessed" => array_merge ($wk, ["composer" => $reqworks[$comp]["composer"]["composer"]])
+                                            );
+                                    }
                                 }
                             }
                         }
