@@ -57,7 +57,7 @@
 
     // finding the works
 
-    $wkdb = mysqlfetch ($mysql, "select composer_id, id, title, searchterms, subtitle, genre, popular, recommended from work where composer_id in (". implode (",", $compids). ") order by composer_id asc, title asc");
+    $wkdb = mysqlfetch ($mysql, "select composer_id, id, title, searchterms, coalesce('', subtitle) subtitle, genre, popular, recommended from work where composer_id in (". implode (",", $compids). ") order by composer_id asc, title asc");
 
     foreach ($reqworks as $comp => $works)
     {
