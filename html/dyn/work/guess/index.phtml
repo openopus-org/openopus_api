@@ -35,20 +35,24 @@
     {
         foreach ($compdb as $cmp)
         {
-            $compname = str_replace ("-", "", slug ($cmp["complete_name"]));
-            
-            similar_text ($comp, $compname, $similarity);
-
-            if ($similarity > 80 && $reqworks[$comp]["composer"]["similarity"] < round ($similarity))
+            foreach (explode (",", str_replace ("&", ",", $reqcomps[$comp])) as $completename)
             {
-                $returncomp[$comp] = ["requested" => $reqcomps[$comp], "guessed" => $cmp];
-                $reqworks[$comp]["composer"] = Array 
-                (
-                    "similarity" => $similarity,
-                    "composer" => $cmp
-                );
-
-                $compids[] = $cmp["id"];
+                $comppart = str_replace ("-", "", slug ($completename));
+                $compname = str_replace ("-", "", slug ($cmp["complete_name"]));
+            
+                similar_text ($comppart, $compname, $similarity);
+    
+                if ($similarity > 80 && $reqworks[$comp]["composer"]["similarity"] < round ($similarity))
+                {
+                    $returncomp[$comp] = ["requested" => $reqcomps[$comp], "guessed" => $cmp];
+                    $reqworks[$comp]["composer"] = Array 
+                    (
+                        "similarity" => $similarity,
+                        "composer" => $cmp
+                    );
+    
+                    $compids[] = $cmp["id"];
+                }
             }
         }
     }
