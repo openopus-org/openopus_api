@@ -108,7 +108,7 @@ vim /etc/environment
 export BASEOPENOPUSDIR="/var/www/openopus_api/html"
 ```
 
-3. Update crontab for root (this will set the cache cleaning routines)
+3. Update crontab for root (this will set the cache-cleaning and search-building routines)
 
 ```bash
 # m     h       dom     mon     dow     command
