@@ -23,7 +23,7 @@
     }
     else
     {
-      preg_match_all (CATALOGUE_REGEX, $works[0]["title"], $matches);
+      preg_match_all (CATALOGUE_REGEX, str_replace ("op. posth.", "", $works[0]["title"]), $matches);
 
       if (sizeof ($matches[0]))
       {
