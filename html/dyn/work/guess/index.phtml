@@ -24,7 +24,7 @@
     foreach ($_REQUEST["works"] as $works)
     {
         $reqcomps[str_replace ("-", "", slug ($works["composer"]))] = $works["composer"];
-        $reqworks[str_replace ("-", "", slug ($works["composer"]))][str_replace ("-", "", slug (worksimplifier ($works["title"])))] = $works["title"];
+        $reqworks[str_replace ("-", "", slug ($works["composer"]))][str_replace ("-", "", slug (/*worksimplifier (*/$works["title"]/*)*/))] = $works["title"];
     }
 
     // finding the composers
