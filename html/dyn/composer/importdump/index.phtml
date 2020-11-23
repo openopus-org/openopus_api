@@ -19,7 +19,7 @@
         "popular" => $composer["popular"]
       );
 
-    $cid = mysqlinsert ($mysql, "newcomposer", $insertcomposer);
+    $cid = mysqlinsert ($mysql, "composer", $insertcomposer);
 
     foreach ($composer["works"] as $work)
     {
@@ -34,7 +34,7 @@
           "genre" => $work["genre"]
         );
 
-      mysqlinsert ($mysql, "newwork", $insertwork);
+      mysqlinsert ($mysql, "work", $insertwork);
     }
   }
 
