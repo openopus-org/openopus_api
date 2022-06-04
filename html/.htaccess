@@ -3,7 +3,7 @@ AddType 'application/json' .json
 FileETag None
 Header unset ETag
 <If "-z req('Host') == 'dynapi.openopus.org'">
-#Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
 </If>
 <Else>
 Header set Cache-Control "max-age=3600, public"
