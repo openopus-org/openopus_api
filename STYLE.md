@@ -65,7 +65,7 @@ Examples:
 The subtitle is primarily reserved to describe, when needed,
 instrumentation and genre, in the format:
 
-**`Genre,`` ``for`` ``soloist,`` ``soloist,`` ``chorus`` ``and`` ``orchestra`**
+**Genre, for soloist, soloist, chorus and orchestra**
 
 #### Genre
 
@@ -138,7 +138,7 @@ This kind of information should be part of the recording, not part of
 the composition. Therefore, it's registered not on Open Opus but on the
 player itself (Concertmaster, Concertino), in the following format:
 
-**`Version`` ``for`` ``instrument`` ``(abbreviated`` ``verb`` ``by`` ``Complete`` ``Name)`**
+**Version for instrument (abbreviated verb by Complete Name)**
 
 ### Version verbs
 
@@ -185,7 +185,7 @@ Suites and overtures which haven't received distinct opus numbers aren't
 considered compositions by their own. Therefore, this "partial" status
 should be explicit in the recording subtitle, in the format:
 
-**`Part/Collection`` ``from`` ``the`` ``genre`` ``(arr.`` ``Complete`` ``Name)`**
+**Part/Collection from the genre (arr. Complete Name)**
 
 Examples:
 
@@ -222,7 +222,7 @@ use (e.g. Bruckner symphonies). That distinction does not happen on Open
 Opus (different editions aren't different works), but on the players
 (Concertino, Concertmaster).
 
-**`Year`` ``[first]`` ``version`` ``(ed.`` ``Complete`` ``Name)`**
+**Year [first] version (ed. Complete Name)**
 
 Examples:
 
@@ -234,7 +234,7 @@ Examples:
 
 If the edition was made by a third party, use the following pattern:
 
-**`Version`` ``edited`` ``by`` ``Complete`` ``Name`**
+**Version edited by Complete Name**
 
 Examples:
 
@@ -262,7 +262,7 @@ it:
 Vocal works recorded in languages different than the original: make
 users aware of that difference in the recording subtitle.
 
-**`Language`` ``version`` ``of`` ``the`` ``genre`**
+**Language version of the genre**
 
 Examples:
 
