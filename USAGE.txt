@@ -1,29 +1,24 @@
-The Open Opus API is a very straightforward RESTful web service which
-returns data in JSON format. It's completely free to use and it requires
-no registration at all. You can use it in any website, HTTPS or not -
-but we strongly suggest you to serve your web app over HTTPS. You can
-also use the Open Opus API in any non-web application.
+The Open Opus API is a very straightforward RESTful web service which returns data in JSON format. It's completely free to use and it requires no registration at all. You can use it in any website, HTTPS or not - but we strongly suggest you to serve your web app over HTTPS. You can also use the Open Opus API in any non-web application. 
 
-## Base URI
+== Base URI ==
 
 All endpoints begin with
 
-[`https://api.openopus.org`](https://api.openopus.org)
+<code>https://api.openopus.org</code>
 
-## Endpoints
+== Endpoints ==
 
-The Open Opus API has four main endpoint groups: composers, genres,
-works and performers.
+The Open Opus API has four main endpoint groups: composers, genres, works and performers.
 
-### Composers
+=== Composers === 
 
-#### List popular composers
+==== List popular composers ====
 
-`GET /composer/list/pop.json`
+<code>GET /composer/list/pop.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "version": "1.19.10",
@@ -57,16 +52,15 @@ Response:
             "portrait": "https://assets.openopus.org/portraits/55910756-1568084860.jpg"
         }
     ]
-}
-```
+}</syntaxhighlight>
 
-#### List essential composers
+==== List essential composers ====
 
-`GET /composer/list/rec.json`
+<code>GET /composer/list/rec.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "version": "1.19.10",
@@ -101,15 +95,15 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### List composers by first letter
+==== List composers by first letter ====
 
-`GET /composer/list/name/a.json`
+<code>GET /composer/list/name/a.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "version": "1.19.10",
@@ -144,28 +138,28 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### List composers by period
+==== List composers by period ====
 
-`GET /composer/list/epoch/Early Romantic.json`
+<code>GET /composer/list/epoch/Early Romantic.json</code>
 
 Options are:
 
--   Medieval
--   Renaissance
--   Baroque
--   Classical
--   Early Romantic
--   Romantic
--   Late Romantic
--   20th Century
--   Post-War
--   21st Century
+* Medieval
+* Renaissance
+* Baroque
+* Classical
+* Early Romantic
+* Romantic
+* Late Romantic
+* 20th Century
+* Post-War
+* 21st Century
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "version": "1.19.10",
@@ -200,15 +194,15 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### Search composers by name
+==== Search composers by name ====
 
-`GET /composer/list/search/bruc.json`
+<code>GET /composer/list/search/bruc.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "version": "1.19.10",
@@ -243,15 +237,15 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### List composers by ID
+==== List composers by ID ====
 
-`GET /composer/list/ids/186,52.json`
+<code>GET /composer/list/ids/186,52.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "version": "1.19.10",
@@ -286,17 +280,17 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-### Genres
+=== Genres === 
 
-#### List genres by composer ID
+==== List genres by composer ID ====
 
-`GET /genre/list/composer/2.json`
+<code>GET /genre/list/composer/2.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -324,17 +318,17 @@ Response:
         "Vocal"
     ]
 }
-```
+</syntaxhighlight>
 
-### Works
+=== Works === 
 
-#### List works by composer ID
+==== List works by composer ID ====
 
-`GET /work/list/composer/129/genre/all.json`
+<code>GET /work/list/composer/129/genre/all.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -378,15 +372,15 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### List popular works by composer ID
+==== List popular works by composer ID ====
 
-`GET /work/list/composer/129/genre/Popular.json`
+<code>GET /work/list/composer/129/genre/Popular.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -430,15 +424,15 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### List essential works by composer ID
+==== List essential works by composer ID ====
 
-`GET /work/list/composer/129/genre/Recommended.json`
+<code>GET /work/list/composer/129/genre/Recommended.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -482,23 +476,23 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### List works by composer ID and genre
+==== List works by composer ID and genre ====
 
-`GET /work/list/composer/2/Orchestral.json`
+<code>GET /work/list/composer/2/Orchestral.json</code>
 
 Options are:
 
--   Chamber
--   Keyboard
--   Orchestral
--   Stage
--   Vocal
+* Chamber
+* Keyboard
+* Orchestral
+* Stage
+* Vocal
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -542,15 +536,15 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### Search works by composer ID and title
+==== Search works by composer ID and title ====
 
-`GET /work/list/composer/196/genre/all/search/Sonata.json`
+<code>GET /work/list/composer/196/genre/all/search/Sonata.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -595,15 +589,15 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### Search works by composer ID, genre and title
+==== Search works by composer ID, genre and title ====
 
-`GET /work/list/composer/145/genre/Chamber/search/Cello Sonata.json`
+<code>GET /work/list/composer/145/genre/Chamber/search/Cello Sonata.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -648,15 +642,15 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-#### Detail work by ID
+==== Detail work by ID ====
 
-`GET /work/detail/15076.json`
+<code>GET /work/detail/15076.json </code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -684,15 +678,15 @@ Response:
         "catalogue_number": "17"
     }
 }
-```
+</syntaxhighlight>
 
-#### List works by ID
+==== List works by ID ====
 
-`GET /work/list/ids/15076,24963.json`
+<code>GET /work/list/ids/15076,24963.json</code>
 
 Response:
 
-``` json
+ <syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -749,30 +743,56 @@ Response:
         }
     }
 }
-```
+</syntaxhighlight>
 
-#### List random works
+==== List random works ====
 
-`POST /dyn/work/random`
+<code>POST /dyn/work/random</code>
 
 Header:
 
-|                     |                     |                                          |
-|---------------------|---------------------|------------------------------------------|
-| popularwork         | `1`                 | Return only popular compositions         |
-| recommendedwork     | `1`                 | Return only essential compositions       |
-| popularcomposer     | `1`                 | Return only works by famous composers    |
-| recommendedcomposer | `1`                 | Return only works by essential composers |
-| genre               | `All`               | Return only works of a certain genre     |
-| epoch               | `All`               | Return only works from a certain period  |
-| composer            | `196,183`           | Return only works by specific composers  |
-| composer_not        | `165,3`             | Don't return works by certain composers  |
-| work                | `16642,16578,16595` | Return only works from a list            |
-|                     |                     |                                          |
+{| class="wikitable"
+|popularwork
+|<code>1</code>
+|Return only popular compositions
+|-
+|recommendedwork
+|<code>1</code>
+|Return only essential compositions
+|-
+|popularcomposer
+|<code>1</code>
+|Return only works by famous composers
+|-
+|recommendedcomposer
+|<code>1</code>
+|Return only works by essential composers
+|-
+|genre
+|<code>All</code>
+|Return only works of a certain genre
+|-
+|epoch
+|<code>All</code>
+|Return only works from a certain period
+|-
+|composer
+|<code>196,183</code>
+|Return only works by specific composers
+|-
+|composer_not
+|<code>165,3</code>
+|Don't return works by certain composers
+|-
+|work
+|<code>16642,16578,16595</code>
+|Return only works from a list
+|-
+|}
 
 Response:
 
-``` json
+<syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -866,17 +886,17 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-### Omnisearch
+=== Omnisearch ===
 
-#### Search works and composers by name/title
+==== Search works and composers by name/title ====
 
-`GET /omnisearch/beeth/0.json`
+<code>GET /omnisearch/beeth/0.json</code>
 
 Response:
 
-``` json
+<syntaxhighlight lang="json">
 {
     "status": {
         "success": "true",
@@ -1087,23 +1107,24 @@ Response:
     ],
     "next": 20
 }
-```
+</syntaxhighlight>
 
-### Performers
+=== Performers ===
 
-#### List roles by names
+==== List roles by names ====
 
-`POST /dyn/performer/list`
+<code>POST /dyn/performer/list</code>
 
 Header:
 
-|       |                                                                            |
-|-------|----------------------------------------------------------------------------|
-| names | `["Herbert von Karajan", "Sviatoslav Richter", "Berliner Philharmoniker"]` |
+{| class="wikitable"
+|names
+|<code>["Herbert von Karajan", "Sviatoslav Richter", "Berliner Philharmoniker"]</code>
+|}
 
 Response:
 
-``` json
+<syntaxhighlight lang="json">
 {
     "status": {
         "version": "1.20",
@@ -1143,23 +1164,24 @@ Response:
         }
     }
 }
-```
+</syntaxhighlight>
 
-### Work guesser
+=== Work guesser ===
 
-#### Bulk discover composer and work IDs by title
+==== Bulk discover composer and work IDs by title ====
 
-`POST /dyn/work/guess`
+<code>POST /dyn/work/guess</code>
 
 Header:
 
-|       |                                                                                                                                                                                            |
-|-------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| works | `[{"composer":"Igor Stravinsky","title":"Le sacre du printemps"},{"composer":"Anton Bruckner","title":"Symphony no 4"},{"composer":"Ferruccio Busoni", "title":"Piano concerto, op. 39"}]` |
+{| class="wikitable"
+|works
+|<code>[{"composer":"Igor Stravinsky","title":"Le sacre du printemps"},{"composer":"Anton Bruckner","title":"Symphony no 4"},{"composer":"Ferruccio Busoni", "title":"Piano concerto, op. 39"}]</code>
+|}
 
 Response:
 
-``` json
+<syntaxhighlight lang="json">
 {
     "status": {
         "version": "1.20.6",
@@ -1282,20 +1304,39 @@ Response:
         }
     ]
 }
-```
+</syntaxhighlight>
 
-## The Status object
+== The Status object ==
 
-The Open Opus API always returns a `200 OK` success code. Errors and
-stats are reported in the `status` object instead:
+The Open Opus API always returns a <code>200 OK</code> success code. Errors and stats are reported in the <code>status</code> object instead:
 
-|                  |                         |                                                                                         |
-|------------------|-------------------------|-----------------------------------------------------------------------------------------|
-| `version`        | `1.20`                  | The Open Opus version                                                                   |
-| `success`        | `true`                  | "true" if there are results for the query, "false" otherwise                            |
-| `error`          | `No works found`        | "No \[items\] found" if good query with no results or "Bad request" if bad formed query |
-| `source`         | `db`                    | "db" if no external APIs were consumed, "external" otherwise                            |
-| `rows`           | `2`                     | Number of results                                                                       |
-| `processingtime` | `0.0018379688262939453` | Response time in seconds                                                                |
-| `api`            | `Open Opus-dyn`         | "Open Opus-cache" if showing a cached result, "Open Opus-dyn" otherwise                 |
-|                  |                         |                                                                                         |
+{| class="wikitable"
+|<code>version</code>
+|<code>1.20</code>
+|The Open Opus version
+|-
+|<code>success</code>
+|<code>true</code>
+|"true" if there are results for the query, "false" otherwise
+|-
+|<code>error</code>
+|<code>No works found</code>
+|"No [items] found" if good query with no results or "Bad request" if bad formed query
+|-
+|<code>source</code>
+|<code>db</code>
+|"db" if no external APIs were consumed, "external" otherwise
+|-
+|<code>rows</code>
+|<code>2</code>
+|Number of results
+|-
+|<code>processingtime</code>
+|<code>0.0018379688262939453</code>
+|Response time in seconds 
+|-
+|<code>api</code>
+|<code>Open Opus-dyn</code>
+|"Open Opus-cache" if showing a cached result, "Open Opus-dyn" otherwise
+|-
+|}
