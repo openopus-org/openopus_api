@@ -5,7 +5,7 @@ It provides composers, works and performers information to classical music apps 
 
 ## Usage
 
-It's a public RESTful API which returns data in JSON format. There is a [wiki](https://openopus.org/docs) explaining all endpoints and data structures. No registration needed.
+It's a public RESTful API which returns data in JSON format. There is a [doc](https://github.com/openopus-org/openopus_api/blob/master/USAGE.md) explaining all endpoints and data structures. No registration needed.
 
 ## How to build
 
