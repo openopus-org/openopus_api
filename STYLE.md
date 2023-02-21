@@ -20,7 +20,7 @@ necessary.
 
 ### Title
 
-**Name no. # in K major, op. # no.#, C.#, CC.#, “Nickname”**
+**`Name no. # in K major, op. # no.#, C.#, CC.#, “Nickname”`**
 
 Examples:
 
