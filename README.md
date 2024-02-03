@@ -1,7 +1,7 @@
 # openopus_api
 [Open Opus](https://openopus.org) is a free and open source API to classical music metadata.
 
-It provides composers, works and performers information to classical music apps such as [Concertmaster](https://getconcertmaster.com) and [Concertino](https://getconcertino.com). It's written in PHP and relies on a MySQL database. It's free and everybody can use it directly. Additionally, all Open Opus data is in the [public domain](https://creativecommons.org/publicdomain/zero/1.0/) and can be freely used.
+It provides composers, works and performers information to classical music apps such as [Concertmaster](https://getconcertmaster.com). It's written in PHP and relies on a MySQL database. It's free and everybody can use it directly. Additionally, all Open Opus data is in the [public domain](https://creativecommons.org/publicdomain/zero/1.0/) and can be freely used.
 
 ## Usage
 
