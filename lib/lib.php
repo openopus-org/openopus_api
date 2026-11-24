@@ -39,3 +39,10 @@
     return "";
   }
 
+  // turn a comma separated list of MusicBrainz ids into an array
+
+  function mbidlist ($mbids)
+  {
+    return $mbids ? explode (",", $mbids) : Array ();
+  }
+

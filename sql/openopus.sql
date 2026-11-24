@@ -17,7 +17,8 @@ CREATE TABLE `composer` (
   `epoch` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `country` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `recommended` tinyint(1) UNSIGNED DEFAULT '0',
-  `popular` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
+  `popular` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
+  `mbid` char(36) CHARACTER SET ascii DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `omnisearch` (
@@ -44,6 +45,11 @@ CREATE TABLE `work` (
   `popular` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `work_mbid` (
+  `work_id` int(10) UNSIGNED NOT NULL,
+  `mbid` char(36) CHARACTER SET ascii NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 ALTER TABLE `composer`
   ADD PRIMARY KEY (`id`),
@@ -54,7 +60,8 @@ ALTER TABLE `composer`
   ADD KEY `epoch` (`epoch`),
   ADD KEY `recommended` (`recommended`),
   ADD KEY `country` (`country`),
-  ADD KEY `popular` (`popular`);
+  ADD KEY `popular` (`popular`),
+  ADD KEY `mbid` (`mbid`);
 ALTER TABLE `composer` ADD FULLTEXT KEY `name_2` (`name`,`complete_name`);
 
 ALTER TABLE `omnisearch` ADD FULLTEXT KEY `summary` (`summary`);
@@ -73,6 +80,10 @@ ALTER TABLE `work`
   ADD KEY `recommended` (`recommended`),
   ADD KEY `popular` (`popular`);
 ALTER TABLE `work` ADD FULLTEXT KEY `titlesearch` (`title`,`subtitle`);
+
+ALTER TABLE `work_mbid`
+  ADD PRIMARY KEY (`work_id`,`mbid`),
+  ADD KEY `mbid` (`mbid`);
 
 
 ALTER TABLE `composer`
