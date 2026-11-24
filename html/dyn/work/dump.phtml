@@ -5,7 +5,7 @@
 
   // listing works
 
-  $sql = "select composer.id as composer, composer.popular as comp_popular, composer.recommended as comp_recommended, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, genre, composer.epoch, composer.name, composer.complete_name, composer.portrait, composer.birth, composer.death from composer, work where work.composer_id = composer.id order by composer.name asc, title asc";
+  $sql = "select composer.id as composer, composer.popular as comp_popular, composer.recommended as comp_recommended, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, genre, (select group_concat(mbid order by mbid) from work_mbid where work_id = work.id) mbids, composer.epoch, composer.name, composer.complete_name, composer.portrait, composer.birth, composer.death, composer.mbid as comp_mbid from composer, work where work.composer_id = composer.id order by composer.name asc, title asc";
   $works = mysqlfetch ($mysql, $sql);
 
   if (!$works)
@@ -36,6 +36,7 @@
           "death"=>$work["death"],
           "popular"=>$work["comp_popular"],
           "recommended"=>$work["comp_recommended"],
+          "mbid"=>$work["comp_mbid"],
         );
       }
 
@@ -46,7 +47,8 @@
         "searchterms" => $work["searchterms"],
         "popular" => $work["popular"],
         "recommended" => $work["recommended"],
-        "genre" => $work["genre"] 
+        "genre" => $work["genre"],
+        "mbids" => mbidlist ($work["mbids"])
       );
 
       $lastcid = $work["composer"];

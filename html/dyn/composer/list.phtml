@@ -80,7 +80,7 @@
 
   if ($goquery)
   {
-    $composers = mysqlfetch ($mysql, "select id, name, complete_name, birth, death, epoch, portrait from composer $where order by name asc");
+    $composers = mysqlfetch ($mysql, "select id, name, complete_name, birth, death, epoch, portrait, mbid from composer $where order by name asc");
 
     if (!$composers)
     {

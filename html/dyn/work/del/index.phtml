@@ -24,6 +24,8 @@
       {
         $apireturn["status"]["success"] = "true";
 
+        mysqli_query ($mysql, "delete from work_mbid where work_id={$_REQUEST["wid"]}");
+
         shell_exec ("rm ". WEBDIR. "/genre/list/composer/{$_REQUEST["composer_id"]}.json");
         shell_exec ("rm ". WEBDIR. "/work/list/composer/{$_REQUEST["composer_id"]}/ -rf");
         shell_exec ("rm ". WEBDIR. "/recording/list/work/{$_REQUEST["wid"]}.json");

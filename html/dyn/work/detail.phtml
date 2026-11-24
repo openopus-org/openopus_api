@@ -3,7 +3,7 @@
 
   // listing works
 
-  $sql = "select epoch, genre, composer_id as composer, composer.name, composer.complete_name, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.id from work, composer where work.id = {$_REQUEST["id"]} and composer.id=work.composer_id";
+  $sql = "select epoch, genre, composer_id as composer, composer.name, composer.complete_name, composer.mbid as composer_mbid, title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.id, (select group_concat(mbid order by mbid) from work_mbid where work_id = work.id) mbids from work, composer where work.id = {$_REQUEST["id"]} and composer.id=work.composer_id";
   $works = mysqlfetch ($mysql, $sql);
 
   if (!$works)
@@ -67,9 +67,11 @@
         "id"=>$works[0]["composer"],
         "name"=>$works[0]["name"],
         "complete_name"=>$works[0]["complete_name"],
-        "epoch"=>$works[0]["epoch"]
+        "epoch"=>$works[0]["epoch"],
+        "mbid"=>$works[0]["composer_mbid"]
       );
-    $apireturn["work"] = arraydelete ($works, ["composer", "name", "complete_name", "epoch"])[0];
+    $apireturn["work"] = arraydelete ($works, ["composer", "name", "complete_name", "epoch", "composer_mbid"])[0];
+    $apireturn["work"]["mbids"] = mbidlist ($apireturn["work"]["mbids"]);
 
     // in title mode, look for similarly titled works from the same composer
 

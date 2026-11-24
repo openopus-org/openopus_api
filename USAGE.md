@@ -1284,6 +1284,15 @@ Response:
 }
 ```
 
+## MusicBrainz ids
+
+Composers can include `mbid`, their [MusicBrainz](https://musicbrainz.org)
+artist id. Works can include `mbids`, a list of MusicBrainz work ids. A
+work can have more than one, because MusicBrainz sometimes holds the same
+work twice. Both are shown in the composer list, work list, work detail
+and full dump endpoints. When no id is known yet, `mbid` is null and
+`mbids` is an empty list.
+
 ## The Status object
 
 The Open Opus API always returns a `200 OK` success code. Errors and

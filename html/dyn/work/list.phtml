@@ -69,7 +69,7 @@
 
   // listing works
 
-  $sql = "select title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, work.id as id, genre, composer.epoch, composer.id as composer, composer.name, composer.complete_name, composer.portrait, composer.birth, composer.death from composer, work where work.composer_id = composer.id $where order by composer.name asc, $order title asc";
+  $sql = "select title, ifnull(subtitle,'') subtitle, ifnull(searchterms,'') searchterms, work.popular popular, work.recommended recommended, work.id as id, genre, (select group_concat(mbid order by mbid) from work_mbid where work_id = work.id) mbids, composer.epoch, composer.id as composer, composer.name, composer.complete_name, composer.portrait, composer.birth, composer.death, composer.mbid as composer_mbid from composer, work where work.composer_id = composer.id $where order by composer.name asc, $order title asc";
   $works = mysqlfetch ($mysql, $sql);
 
   if (!$works)
@@ -80,6 +80,13 @@
   }
   else
   {
+    // turning MusicBrainz id lists into arrays
+
+    foreach ($works as $wkskey => $wk)
+    {
+      $works[$wkskey]["mbids"] = mbidlist ($wk["mbids"]);
+    }
+
     // sorting works in natural order
 
     foreach ($works as $wkskey => $wksrt)
@@ -125,10 +132,11 @@
           "birth"=>$works[0]["birth"],
           "death"=>$works[0]["death"],
           "complete_name"=>$works[0]["complete_name"],
-          "portrait"=>$works[0]["portrait"]
+          "portrait"=>$works[0]["portrait"],
+          "mbid"=>$works[0]["composer_mbid"]
         );
 
-      $apireturn["works"] = arraydelete ($works, ["composer", "name", "epoch", "complete_name", "birth", "death", "portrait"]);
+      $apireturn["works"] = arraydelete ($works, ["composer", "name", "epoch", "complete_name", "birth", "death", "portrait", "composer_mbid"]);
     }
 
     if (!$_REQUEST["composer"])
@@ -139,13 +147,14 @@
       foreach ($works as $work)
       {
         $apireturn["works"]["w:". $work["id"]] = Array (
-          "composer" => ["id" => $work["composer"], "name" => $work["name"], "complete_name" => $work["complete_name"], "epoch" => $work["epoch"], "birth" => $work["birth"], "death" => $work["death"], "portrait" => $work["portrait"]],
+          "composer" => ["id" => $work["composer"], "name" => $work["name"], "complete_name" => $work["complete_name"], "epoch" => $work["epoch"], "birth" => $work["birth"], "death" => $work["death"], "portrait" => $work["portrait"], "mbid" => $work["composer_mbid"]],
           "id" => $work["id"],
           "title" => $work["title"],
           "subtitle" => $work["subtitle"],
           "genre" => $work["genre"],
           "popular" => $work["popular"],
-          "recommended" => $work["recommended"]
+          "recommended" => $work["recommended"],
+          "mbids" => $work["mbids"]
         );
 
         $abstract["c:". $work["composer"]] = $abstract["c:". $work["composer"]] + 1;
