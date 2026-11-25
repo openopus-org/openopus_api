@@ -102,7 +102,7 @@
 
     foreach ($composers as $cpin => $cp)
     {
-      if (!in_array ($cpin, $featcomposers))
+      if (!in_array ($cpin, $featcomposers ?? Array ()))
       {
         array_unshift ($apireturn["results"], Array ("composer" => $cp, "work" => null));
       }
